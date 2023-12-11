@@ -1,21 +1,22 @@
-name: "ctwas-paper"
+name: "causal-TWAS"
 output_dir: ../docs
 navbar:
-  title: "ctwas-paper"
+  title: "causal-TWAS"
   left:
   - text: Home
-    href: index.html
+    href: https://stephenslab.github.io/causal-TWAS/index.html
   - text: About
-    href: about.html
+    href: https://stephenslab.github.io/causal-TWAS/about.html
   - text: License
     href: license.html
   right:
   - icon: fa-github
     text: Source code
-    href: https://github.com/xinhe-lab/ctwas-paper
+    href: https://github.com/stephenslab/causal-TWAS
 output:
   workflowr::wflow_html:
     toc: yes
     toc_float: yes
+    code_folding: "hide"
     theme: journal
     highlight: textmate

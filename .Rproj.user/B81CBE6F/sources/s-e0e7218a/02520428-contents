@@ -8,9 +8,20 @@ editor_options:
   chunk_output_type: console
 ---
 
-This website includes tutorials to reproduce the analysis results presented in the ctwas paper:
+# Introduction
+
+This repository contains code and data resources to accompany our research paper:
 
 > Siming, Z., Wesley, C., Sheng, Q., Kaixuan, L., Stephens, M. & Xin, H. (2022). Adjusting for genetic confounders in transcriptome-wide association studies leads to reliable detection of causal genes application to genetic fine mapping. *bioRxiv https://doi.org/10.1101/2022.09.27.509700
 
-The `ctwas` R package can be accessed [here](https://github.com/xinhe-lab/ctwas). 
+The `ctwas` R package can be accessed [here](https://github.com/xinhe-lab/ctwas). The main analyses in the paper was obtained using ctwas v0.1.29. 
+
+
+
+
+
+
+
+
+
 

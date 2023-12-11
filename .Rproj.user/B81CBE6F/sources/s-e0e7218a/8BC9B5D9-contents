@@ -1,0 +1,107 @@
+
+codedir = "~/causalTWAS/causal-TWAS/code/" # add / at end
+pgenfs = "/home/simingz/causalTWAS/ukbiobank/ukb_pgen_s40.22/ukb-s40.22_pgenfs.txt"
+ld_pgenfs = "/home/simingz/causalTWAS/ukbiobank/ukb_pgen_s40.22/ukb-s40.22.2_pgenfs.txt"
+weight = "/home/simingz/causalTWAS/fusion_weights/Adipose_Subcutaneous"
+
+outputdir = "/home/simingz/causalTWAS/simulations/simulation_ctwas_rss_20210415/" # add / at end
+runtag = "ukb-s40.22-adi"
+configtags = [str(i) for i in range(1,2)]
+simutags = [ str(i) + "-" + str(j) for i in range(1,11) for j in range(1,6)]
+
+rule all:
+    input: 
+        [outputdir + runtag +'_simu'+ simutag + '_config' + configtag + ".susieIrss.txt" for simutag in simutags for configtag in configtags] + [outputdir + runtag + '_simu'+ simutag +'.exprgwas.txt.gz' for simutag in simutags]
+        # [outputdir + runtag + '_simu{simutag}-pheno.Rd'.format(simutag = i) for i in simutags]
+        
+rule simu_prep_param:
+    params:
+        pve_gene = [0.1,   0.1,   0.05,  0.05,  0.2,   0.2,   0.1,  0.1,  0.02,  0.02],
+        pi1_gene = [0.05,  0.015, 0.05,  0.015, 0.05,  0.015, 0.05, 0.015,0.05,  0.015],
+        pve_snp  = [0.5,   0.5,   0.5,   0.5,   0.5,   0.5,   0.3,  0.3,  0.5,   0.5],
+        pi1_snp  = [2.5e-4,2.5e-4,2.5e-4,2.5e-4,2.5e-4,2.5e-4,1e-4, 1e-4, 2.5e-4,2.5e-4]
+    output:
+        [outputdir +'simu' + simutag + '_param.R' for simutag in simutags]
+    run:
+        for simutag in simutags:
+            t1, t2 = simutag.split('-')
+            with open(outputdir + 'simu' + simutag +'_param.R', 'w') as outf:
+                lines = ['pve.expr <- ' + str(params.pve_gene[int(t1)-1]),
+                        'pi_beta <- ' + str(params.pi1_gene[int(t1)-1]),
+                        'pve.snp <- ' + str(params.pve_snp[int(t1)-1]),
+                        'pi_theta <- ' + str(params.pi1_snp[int(t1)-1]),
+                        'SED <- ' + str(950 + int(t2))]
+                outf.writelines(s + '\n' for s in lines)
+                
+
+rule impute_expr:
+    input:
+        pgenfs = pgenfs,
+        weight = weight
+    output:
+        outputdir + runtag + ".expr.txt"
+    params:
+        outname = runtag,
+        outputdir = outputdir
+    shell:
+        'Rscript ' + codedir + 'run_impute_expr.R {input.pgenfs} {input.weight} {params.outname} {params.outputdir}'
+        
+rule simulate_phenotype:
+    input:
+        pgenfs = pgenfs,
+        exprfs = rules.impute_expr.output,
+        paramf = outputdir + 'simu{simutag}_param.R'
+    output:
+        outputdir + runtag + '_simu{simutag}-pheno.Rd'
+    params:
+        outname = runtag + '_simu{simutag}',
+        outputdir = outputdir
+    shell:
+        'Rscript ' + codedir + 'run_simulate_pheno.R {input.pgenfs} {input.exprfs} {input.paramf} {params.outname} {params.outputdir}'
+
+rule gwas_expr:
+    input:
+        exprfs = rules.impute_expr.output,
+        phenof = rules.simulate_phenotype.output
+    output:
+        outputdir + runtag + '_simu{simutag}.exprgwas.txt.gz'
+    params:
+        outname = runtag + '_simu{simutag}',
+        outputdir = outputdir,
+        ncore = 1,
+        nsplits = 2
+    shell:
+        'Rscript ' + codedir + 'run_gwas_expr.R {input.exprfs} {input.phenof} {params.outname} {params.outputdir}\
+         {params.ncore} {params.nsplits}'
+    
+    
+rule gwas_snp:
+    input:
+        pgenfs = pgenfs,
+        phenof = rules.simulate_phenotype.output
+    output:
+        outputdir + runtag + '_simu{simutag}.snpgwas.txt.gz'
+    params:
+        outname = runtag + '_simu{simutag}',
+        outputdir = outputdir,
+        ncore = 27,
+        nsplits = 1000
+    shell:
+        'Rscript ' + codedir + 'run_gwas_snp.R {input.pgenfs} {input.phenof} {params.outname} {params.outputdir} \
+        {params.ncore} {params.nsplits}'
+
+rule ctwas_rss:
+    input:
+        ld_pgenfs = ld_pgenfs,
+        snpz = rules.gwas_snp.output,
+        weight = weight,
+        configfile = outputdir + 'config{configtag}.R'
+    output:
+        outputdir + runtag + '_simu{simutag}_config{configtag}.susieIrss.txt'
+    params:
+        outname_expr = runtag + '_simu{simutag}',
+        outname = runtag + '_simu{simutag}_config{configtag}',
+        outputdir = outputdir
+    shell:
+        'Rscript ' + codedir + 'run_ctwas_rss2.R {input.snpz} {input.ld_pgenfs} {input.weight} {input.configfile} \{params.outname_expr} {params.outname} {params.outputdir}'
+

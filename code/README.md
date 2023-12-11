@@ -1,3 +1,2 @@
 # Code
-
-Save command-line scripts and shared R code here.
+This folder contains custom code and scripts to run analysis presented in the cTWAS paper.

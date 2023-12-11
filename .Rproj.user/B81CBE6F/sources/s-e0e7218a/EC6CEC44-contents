@@ -1,0 +1,1652 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Get weights from Fusion"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /project2/mstephens/causalTWAS/fusion_weights"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "--2019-10-29 16:14:53--  https://data.broadinstitute.org/alkesgroup/FUSION/WGT/YFS.BLOOD.RNAARR.tar.bz2\n",
+      "Resolving data.broadinstitute.org (data.broadinstitute.org)... 69.173.92.29\n",
+      "Connecting to data.broadinstitute.org (data.broadinstitute.org)|69.173.92.29|:443... connected.\n",
+      "HTTP request sent, awaiting response... 200 OK\n",
+      "Length: 69800449 (67M) [application/x-bzip2]\n",
+      "Saving to: ‘YFS.BLOOD.RNAARR.tar.bz2’\n",
+      "\n",
+      "100%[======================================>] 69,800,449  3.46MB/s   in 14s    \n",
+      "\n",
+      "2019-10-29 16:15:08 (4.75 MB/s) - ‘YFS.BLOOD.RNAARR.tar.bz2’ saved [69800449/69800449]\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "wget https://data.broadinstitute.org/alkesgroup/FUSION/WGT/YFS.BLOOD.RNAARR.tar.bz2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tar xjf YFS.BLOOD.RNAARR.tar.bz2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "YFS.BLOOD.RNAARR       YFS.BLOOD.RNAARR.pos\t YFS.BLOOD.RNAARR.profile.err\n",
+      "YFS.BLOOD.RNAARR.list  YFS.BLOOD.RNAARR.profile  YFS.BLOOD.RNAARR.tar.bz2\n"
+     ]
+    }
+   ],
+   "source": [
+    "ls"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "* download all GTEx weights (v7) from Fusion"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /project2/mstephens/causalTWAS/fusion_weights"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "--2020-05-10 21:25:22--  http://gusevlab.org/projects/fusion/weights/GTEX7.txt\n",
+      "Resolving gusevlab.org (gusevlab.org)... 52.216.104.170\n",
+      "Connecting to gusevlab.org (gusevlab.org)|52.216.104.170|:80... connected.\n",
+      "HTTP request sent, awaiting response... 200 OK\n",
+      "Length: 3827 (3.7K) [text/plain]\n",
+      "Saving to: ‘GTEX7.txt’\n",
+      "\n",
+      "100%[======================================>] 3,827       --.-K/s   in 0s      \n",
+      "\n",
+      "2020-05-10 21:25:22 (215 MB/s) - ‘GTEX7.txt’ saved [3827/3827]\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "wget http://gusevlab.org/projects/fusion/weights/GTEX7.txt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "wget -E -H -k -K -p -e robots=off -i ./GTEX7.txt"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Create multiple copies with different names"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "only keep chr17-22 genes, make 8 copies and assign names with tag B1-B8"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "mkdir: cannot create directory ‘Adipose_Subcutaneous_B’: File exists\n"
+     ]
+    }
+   ],
+   "source": [
+    "cd /project2/mstephens/causalTWAS/fusion_weights\n",
+    "mkdir Adipose_Subcutaneous_B\n",
+    "sed 's\\Adipose_Subcutaneous\\Adipose_Subcutaneous_B\\g' Adipose_Subcutaneous.pos > Adipose_Subcutaneous_B.pos"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# R code\n",
+    "setwd(\"/home/simingz/causalTWAS/fusion_weights\")\n",
+    "posf0 <- \"Adipose_Subcutaneous.pos\"\n",
+    "posf = \"Adipose_Subcutaneous_B.pos\"\n",
+    "pos0 = read.table(posf0, header = T, stringsAsFactors = F)\n",
+    "pos <- read.table(posf, header = T, stringsAsFactors = F)\n",
+    "\n",
+    "pos0 <- pos0[pos0$CHR <=22 & pos0$CHR >=17,]\n",
+    "pos <- pos[pos$CHR <=22 & pos$CHR >=17,]\n",
+    "\n",
+    "renamesnps <- function(row, tag) {\n",
+    "  f0 <- row[1]\n",
+    "  f <- row[2]\n",
+    "  load(f0)\n",
+    "  rownames(wgt.matrix) <- paste0(rownames(wgt.matrix), tag)\n",
+    "  snps[,1] <- paste0(snps[,1], tag)\n",
+    "  snps[,2] <- paste0(snps[,2], tag)\n",
+    "  save(wgt.matrix, snps, cv.performance, hsq, hsq.pv, N.tot, file = f)\n",
+    "}\n",
+    "\n",
+    "\n",
+    "outdfall <- NULL\n",
+    "for (i in 1:6) {\n",
+    "  tag <- paste0(\"-B\", i)\n",
+    "  outdf <- pos\n",
+    "  outdf$WGT <- gsub(\".wgt\", paste0(tag, \".wgt\"), outdf$WGT)\n",
+    "  outdf$ID <- paste0(outdf$ID, tag)\n",
+    "  outdf$CHR <- paste0(outdf$CHR, tag)\n",
+    "  rd <- cbind(pos0$WGT, outdf$WGT)\n",
+    "  apply(rd, 1, renamesnps, tag = tag)\n",
+    "  outdfall <- rbind(outdfall, outdf)\n",
+    "}\n",
+    "\n",
+    "write.table(outdfall , file= posf, row.names=F, col.names=T, sep=\"\\t\", quote = F)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Fusion weights from Xiaotong"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cp /project2/xinhe/xsun/former_proj/methylation_train/WEIGHTS/*.* /project2/mstephens/causalTWAS/fusion_weights"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cp /project2/xinhe/xsun/former_proj/train_weights_H3K27ac/WEIGHTS /project2/mstephens/causalTWAS/fusion_weights "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# FUSION weights revised to match UKB"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "It seems .pvar generated for different samples from UKB is the same. (Same SNP ref alt definition).  "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "regenerate FUSION weights file so that the SNPs match UKB"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "library(plyr)\n",
+    "setwd(\"/home/simingz/causalTWAS/fusion_weights\")\n",
+    "allpos <- read.table(\"Adipose_Subcutaneous.pos.IDfixed\", header = T, stringsAsFactors = F)\n",
+    "ld_pgenfn = \"~/causalTWAS/ukbiobank/ukb_pgen_s40.22/ukb-s40.22.2_pgenfs.txt\"\n",
+    "\n",
+    "ld_pgenfs <- read.table(ld_pgenfn, header = F, stringsAsFactors = F)[,1]\n",
+    "ld_pvarfs <- sapply(ld_pgenfs, prep_pvar, outputdir = \"~/temp/\")\n",
+    "for (i in 1:22){\n",
+    "  files <- allpos[allpos$CHR == i, \"WGT\"]\n",
+    "  pvar <- read_pvar(ld_pvarfs[i])\n",
+    "  for (j in 1:length(files)){\n",
+    "    print(c(i, j))\n",
+    "    load(files[j])\n",
+    "    colnames(snps)[2] <- \"id\"\n",
+    "\n",
+    "    out <- cbind(pvar[match(snps[,2], pvar$id), ],0)\n",
+    "    out2 <- out[, c(1,2,6,3:5)]\n",
+    "    out2[which(!complete.cases(out2)),] <- snps[which(!complete.cases(out2)),]\n",
+    "    snps <- as.data.frame(out2)\n",
+    "    colnames(snps) <- paste0(\"V\", 1:6)\n",
+    "    save(wgt.matrix, snps, cv.performance, hsq, hsq.pv, N.tot, file = files[j])\n",
+    "  }\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /home/simingz/causalTWAS/fusion_weights\n",
+    "mv Adipose_Subcutaneous Adipose_Subcutaneous_setalleleUKB"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Process WTCCC data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "WTCCC data obtained from Peter (`bd.RData`). We will prepare genotype file in BIMBAM format and relatedness matrix file."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# sinteractive --time=1-12:00:00 --partition=mstephens --mem=20G\n",
+    "module load R/3.5.1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /project2/mstephens/causalTWAS/causal-TWAS/code"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "Rscript run_WTCCC_data_process.R"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "bd.geno.txt.gz\tbd.pheno.txt  bd.QC.RData  bd.RData\n"
+     ]
+    }
+   ],
+   "source": [
+    "ls /project2/mstephens/causalTWAS/WTCCC"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Gene annotation data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "mkdir /project2/mstephens/causalTWAS/annotation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /project2/mstephens/causalTWAS/annotation; wget http://hgdownload.soe.ucsc.edu/goldenPath/hg17/database/refGene.txt.gz"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gunzip refGene.txt.gz"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "Rscript /project2/mstephens/causalTWAS/causal-TWAS/code/gene_annotation.R refGene.txt 500000"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "refGene_processed_5e+05.txt  refGene.txt\n"
+     ]
+    }
+   ],
+   "source": [
+    "ls"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# UKbiobank data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## About CRI\n",
+    "Intructions to use CRI: https://github.com/stephenslab/gardner\n",
+    "\n",
+    "* interactive job  \n",
+    "`qsub -I -l walltime=05:00:00 -l nodes=1:ppn=12 -l mem=32gb`\n",
+    "* submit a job  \n",
+    "`qsub ~/script/run_serverjob_template.sh`"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Data storage location\n",
+    "on CRI.\n",
+    "phenotype data: `/gpfs/data/xhe-lab/uk-biobank/`.  \n",
+    "genotype data:  `/gpfs/data/pierce-lab/uk-biobank-genotypes`."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "plink filtering instructions: https://www.cog-genomics.org/plink/2.0/filter"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Generate some test data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "I used the wrong sample list for this part (only)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# use sftp to download file to RCC (very fast)\n",
+    "cd /home/simingz/causalTWAS/ukbiobank\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /gpfs/data/pierce-lab/uk-biobank-genotypes\n",
+    "get ukb_imp_chr22_v3.bgen*\n",
+    "get ukb17346_imp_chr17_v3_s487378.sample\n",
+    "\n",
+    "head -n 20002 ukb17346_imp_chr17_v3_s487378.sample > ukb17346_imp_chr17_v3_s20000.sample\n",
+    "# manually remove first two rows."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Process .bgen file using plink.**  \n",
+    "The original chr22 bgen file contains 1251k variants. After applied the maf (minor allele frequency) 5% cut off, 100k remains. then after applied missing rate 5% cut off (default is 10%), 80k remained."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Originall tried `--make-bed`, this resulted in missing genotype, so switched to `--make-pgen`."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "> Some notes from Chirstopher Chang (author of plink)\n",
+    "1. You generally want to use PLINK 2.0 instead of 1.9 when working with .bgen files.  PLINK 1.9 is unable to track any of the genotype probability information in the .bgen; it rounds numbers to the nearest integer and replaces those too far from an integer with missing calls.\n",
+    "2. If you want to generate a .bgen file with only the variants you want, replace \"--out rs6857.bgen\" with \"--export bgen-1.1 --out rs6857\".  --out just specifies an output filename prefix; including \".bgen\" in the --out parameter does not tell PLINK 2.0 to export a .bgen file.\n",
+    "3. This will still be a lossy process; PLINK 2.0 keeps track of dosages, but not genotype probabilities.  When sample x has P(AA) = 0.8, P(AC) = 0.2, and P(CC) = 0 and sample y has P(AA) = 0.85, P(AC) = 0.1, and P(CC) = 0.05, PLINK 2.0 sees both samples as dosage(A) = 1.8, dosage(C) = 0.2, and it will make both entries look like sample x when asked to export a .bgen.  Sometimes this is okay, but if you aren't sure, you should stick to qctool/bgenix for .bgen data management because of this information loss."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# bed version (plink 1.9)\n",
+    "cd /home/simingz/causalTWAS/ukbiobank/plink_bed_version\n",
+    "bash run_ukb_chr22_s20000.sh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# pgen version (plink 2.0)\n",
+    "cd /home/simingz/causalTWAS/ukbiobank/plink_pgen_version\n",
+    "bash run_ukb_chr22_s20000.sh"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "All `/home/simingz/causalTWAS/ukbiobank/ukb_chr22_s20000.*` files are generated based on .raw and .traw file based on pgen version"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Prepare genotype file for chromosome 22, 20000 samples."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# prepare kept samples, take 20,000\n",
+    "cd /home/szhao1/uk-biobank/uk-biobank-genotypes; \n",
+    "head -n 20002 ukb27386_imp_v3_s487324.sample | awk '{print $1\"\\t\"$2}' > /home/szhao1/causal-TWAS/data/ukbiobank_samples20000.txt\n",
+    "# then manually remove the first two rows."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Prepare genotype file for chromosome 1 & others, samples label S40.22."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on RCC, prepare files\n",
+    "cd /home/simingz/causalTWAS/ukbiobank"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "head -n 140002 ukb27386_imp_v3_s487324.sample | tail -n 40000 | awk '{print $1\"\\t\"$2}' > /home/simingz/causalTWAS/ukbiobank/ukbiobank_samples40000.txt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on CRI filter samples\n",
+    "# run `run_UKB_phenotype.R` on CRI, get `population_ukb26140_ukb32141_s40000.csv`. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# get `ukbiobank_samples_s40.22.txt` from `population_ukb26140_ukb32141_s40000.csv`"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/project2/mstephens/causalTWAS/ukbiobank/CRI_scripts\n"
+     ]
+    }
+   ],
+   "source": [
+    "cd /home/simingz/causalTWAS/ukbiobank/CRI_scripts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cmd = \"cd /home/szhao1/uk-biobank/uk-biobank-genotypes; /home/szhao1/uk-biobank/uk-biobank-phenotypes/tools/plink2 --sample /home/szhao1/uk-biobank/uk-biobank-phenotypes/data/genotypes/ukb27386_imp_v3_s487324.sample --keep /home/szhao1/causal-TWAS/genotype_data/ukbiobank_samples_s40.22.txt --bgen ukb_imp_chr{chrom}_v3.bgen --chr {chrom} --threads 19 --make-pgen --out ~/causal-TWAS/genotype_data/ukb_chr{chrom}_s40.22 --maf 0.05 --geno 0.05 --memory 30000\"\n",
+    "qsubcmd = '''\n",
+    "#!/bin/bash\n",
+    "\n",
+    "#PBS -N bgen2plink\n",
+    "#PBS -S /bin/bash\n",
+    "#PBS -l mem=64gb\n",
+    "#PBS -l walltime=48:00:00\n",
+    "#PBS -l nodes=1:ppn=20\n",
+    "\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data; bash {cmdf}\n",
+    "'''\n",
+    "masterfile = \"s40.22-chr1to22.sh\"\n",
+    "mf = open(masterfile, 'w')\n",
+    "for chrom in [str(i) for i in range(1,23)]:\n",
+    "    cmdf = 'prep_ukbiobank_s40.22_chr' + chrom + '_genotype.sh'\n",
+    "    with open(cmdf, 'w') as f:\n",
+    "        f.write(cmd.format(chrom=chrom))\n",
+    "    qsubf = 'qsub_' + cmdf\n",
+    "    with open(qsubf, 'w') as f2:\n",
+    "        f2.write(qsubcmd.format(cmdf = cmdf))\n",
+    "    mf.write('qsub ' + qsubf + '\\n')\n",
+    "mf.close()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# use sftp to upload to cri, take 1-2 hours on CRI\n",
+    "# applying for 180G memory can be queued for some time.\n",
+    "cd /home/simingz/causalTWAS/ukbiobank/CRI_scripts\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data\n",
+    "put *s40.22*\n",
+    "put ../ukbiobank_samples_s40.22.txt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bash s40.22-chr1to22.sh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# download plink files from CRI\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data\n",
+    "get ukb*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# downsample to 1/10\n",
+    "# R : /project2/mstephens/causalTWAS/ukbiobank\n",
+    "for (i in 1:22){\n",
+    "    rfile <- paste0(\"ukb_chr\", i, \"_s40.22.FBM.Rd\")\n",
+    "    load(rfile)\n",
+    "    write.table( dat$snp , file=  paste0(\"ukb_chr\", i, \"_s40.22_snp.txt\"), row.names=F, col.names=F, sep=\"\\t\", quote = F)\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/project2/mstephens/causalTWAS/ukbiobank/ukb_pgen_s40.22\n"
+     ]
+    }
+   ],
+   "source": [
+    "cd /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s40.22"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cmd = \"source activate twas; cd /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s40.22; plink2 --pfile ukb_chr{chrom}_s40.22 --extract ../ukb_chr{chrom}_s40.22_snp.txt --threads 14 --make-pgen --out ukb_chr{chrom}_s40.22_thinned\"\n",
+    "masterfile = \"s40.22-thin-chr1to22.sh\"\n",
+    "mf = open(masterfile, 'w')\n",
+    "for chrom in [str(i) for i in range(1,23)]:\n",
+    "    mf.write(cmd.format(chrom=chrom) + '\\n')\n",
+    "mf.close()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# create pgen files for 2000 samples as ld\n",
+    "cmd = \"source activate twas; cd /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s40.22; plink2 --pfile ukb_chr{chrom}_s40.22 --keep samples_2000.txt --threads 14 --make-pgen --out ukb_chr{chrom}_s40.22.2\"\n",
+    "masterfile = \"s40.22-select2k-chr1to22.sh\"\n",
+    "mf = open(masterfile, 'w')\n",
+    "for chrom in [str(i) for i in range(1,23)]:\n",
+    "    mf.write(cmd.format(chrom=chrom) + '\\n')\n",
+    "mf.close()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Prepare genotype file, sample label s80.45."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on RCC, prepare files\n",
+    "cd /home/simingz/causalTWAS/ukbiobank\n",
+    "head -n 100002 ukb27386_imp_v3_s487324.sample | tail -n 80000 | awk '{print $1\"\\t\"$2}' > /home/simingz/causalTWAS/ukbiobank/ukbiobank_samples80000.txt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on CRI filter samples\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data\n",
+    "put ukbiobank_samples80000.txt\n",
+    "# run `run_UKB_phenotype.R`\n",
+    "awk -F',' '{print $1\"\\t\"$1}' /home/szhao1/causal-TWAS/phenotype_data/population_ukb26140_ukb32141_s80000.csv > /home/szhao1/causal-TWAS/genotype_data/ukbiobank_samples_s80.45.txt\n",
+    "# remove header manually"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/project2/mstephens/causalTWAS/ukbiobank/CRI_scripts\n"
+     ]
+    }
+   ],
+   "source": [
+    "cd /home/simingz/causalTWAS/ukbiobank/CRI_scripts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cmd = \"cd /home/szhao1/uk-biobank/uk-biobank-genotypes; /home/szhao1/uk-biobank/uk-biobank-phenotypes/tools/plink2 --sample /home/szhao1/uk-biobank/uk-biobank-phenotypes/data/genotypes/ukb27386_imp_v3_s487324.sample --keep /home/szhao1/causal-TWAS/genotype_data/ukbiobank_samples_s80.45.txt --bgen ukb_imp_chr{chrom}_v3.bgen --chr {chrom} --threads 19 --make-pgen --out ~/causal-TWAS/genotype_data/ukb_chr{chrom}_s80.45 --maf 0.05 --geno 0.05 --memory 30000\"\n",
+    "qsubcmd = '''\n",
+    "#!/bin/bash\n",
+    "\n",
+    "#PBS -N bgen2plink\n",
+    "#PBS -S /bin/bash\n",
+    "#PBS -l mem=64gb\n",
+    "#PBS -l walltime=48:00:00\n",
+    "#PBS -l nodes=1:ppn=20\n",
+    "\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data; bash {cmdf}\n",
+    "'''\n",
+    "masterfile = \"s80.45-chr1to22.sh\"\n",
+    "mf = open(masterfile, 'w')\n",
+    "for chrom in [str(i) for i in range(1,23)]:\n",
+    "    cmdf = 'prep_ukbiobank_s80.45_chr' + chrom + '_genotype.sh'\n",
+    "    with open(cmdf, 'w') as f:\n",
+    "        f.write(cmd.format(chrom=chrom))\n",
+    "    qsubf = 'qsub_' + cmdf\n",
+    "    with open(qsubf, 'w') as f2:\n",
+    "        f2.write(qsubcmd.format(cmdf = cmdf))\n",
+    "    mf.write('qsub ' + qsubf + '\\n')\n",
+    "mf.close()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# use sftp to upload to cri, take 1-2 hours on CRI\n",
+    "# applying for 180G memory can be queued for some time.\n",
+    "cd /home/simingz/causalTWAS/ukbiobank/CRI_scripts\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data\n",
+    "put *s80.45*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on CRI\n",
+    "bash s80.45-chr1to22.sh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on RCC\n",
+    "cd ukb_pgen_s80.45\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data\n",
+    "get ukb*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/project2/mstephens/causalTWAS/ukbiobank/ukb_pgen_s80.45\n"
+     ]
+    }
+   ],
+   "source": [
+    "cd /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s80.45"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# create pgen files for 2000 samples as ld\n",
+    "cmd = \"source activate twas; cd /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s80.45; plink2 --pfile ukb_chr{chrom}_s80.45 --keep samples_2000.txt --threads 14 --make-pgen --out ukb_chr{chrom}_s80.45.2\"\n",
+    "masterfile = \"s80.45-select2k-chr1to22.sh\"\n",
+    "mf = open(masterfile, 'w')\n",
+    "for chrom in [str(i) for i in range(1,23)]:\n",
+    "    mf.write(cmd.format(chrom=chrom) + '\\n')\n",
+    "mf.close()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Prepare genotype file, sample label s200.113."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on RCC, prepare files\n",
+    "cd /home/simingz/causalTWAS/ukbiobank\n",
+    "head -n 340002 ukb27386_imp_v3_s487324.sample | tail -n 200000 | awk '{print $1\"\\t\"$2}' > /home/simingz/causalTWAS/ukbiobank/ukbiobank_samples200k.txt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on CRI filter samples\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data\n",
+    "put ukbiobank_samples200k.txt\n",
+    "# run `run_UKB_phenotype.R`\n",
+    "awk -F',' '{print $1\"\\t\"$1}' /home/szhao1/causal-TWAS/phenotype_data/population_ukb26140_ukb32141_s200k.csv > /home/szhao1/causal-TWAS/genotype_data/ukbiobank_samples_s200.113.txt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/project2/mstephens/causalTWAS/ukbiobank/CRI_scripts\n"
+     ]
+    }
+   ],
+   "source": [
+    "cd /home/simingz/causalTWAS/ukbiobank/CRI_scripts"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cmd = \"cd /home/szhao1/uk-biobank/uk-biobank-genotypes; /home/szhao1/uk-biobank/uk-biobank-phenotypes/tools/plink2 --sample /home/szhao1/uk-biobank/uk-biobank-phenotypes/data/genotypes/ukb27386_imp_v3_s487324.sample --keep /home/szhao1/causal-TWAS/genotype_data/ukbiobank_samples_s200.113.txt --bgen ukb_imp_chr{chrom}_v3.bgen --chr {chrom} --threads 19 --make-pgen --out ~/causal-TWAS/genotype_data/ukb_chr{chrom}_s200.113 --maf 0.05 --geno 0.05 --memory 30000\"\n",
+    "qsubcmd = '''\n",
+    "#!/bin/bash\n",
+    "\n",
+    "#PBS -N bgen2plink\n",
+    "#PBS -S /bin/bash\n",
+    "#PBS -l mem=64gb\n",
+    "#PBS -l walltime=48:00:00\n",
+    "#PBS -l nodes=1:ppn=20\n",
+    "\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data; bash {cmdf}\n",
+    "'''\n",
+    "masterfile = \"s200.113-chr1to22.sh\"\n",
+    "mf = open(masterfile, 'w')\n",
+    "for chrom in [str(i) for i in range(1,23)]:\n",
+    "    cmdf = 'prep_ukbiobank_s200.113_chr' + chrom + '_genotype.sh'\n",
+    "    with open(cmdf, 'w') as f:\n",
+    "        f.write(cmd.format(chrom=chrom))\n",
+    "    qsubf = 'qsub_' + cmdf\n",
+    "    with open(qsubf, 'w') as f2:\n",
+    "        f2.write(qsubcmd.format(cmdf = cmdf))\n",
+    "    mf.write('qsub ' + qsubf + '\\n')\n",
+    "mf.close()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# use sftp to upload to cri, take 1-2 hours on CRI\n",
+    "# applying for 180G memory can be queued for some time.\n",
+    "cd /home/simingz/causalTWAS/ukbiobank/CRI_scripts\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data\n",
+    "put *s200.113*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on CRI\n",
+    "bash s200.113-chr1to22.sh"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# on RCC\n",
+    "cd ukb_pgen_s200.113\n",
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /home/szhao1/causal-TWAS/genotype_data\n",
+    "get ukb*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "/project2/mstephens/causalTWAS/ukbiobank/ukb_pgen_s200.113\n"
+     ]
+    }
+   ],
+   "source": [
+    "cd /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s200.113"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# create pgen files for 2000 samples as ld\n",
+    "cmd = \"source activate twas; cd /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s200.113; plink2 --pfile ukb_chr{chrom}_s200.113 --keep samples_2000.txt --threads 14 --make-pgen --out ukb_chr{chrom}_s200.113.2\"\n",
+    "masterfile = \"s200.113-select2k-chr1to22.sh\"\n",
+    "mf = open(masterfile, 'w')\n",
+    "for chrom in [str(i) for i in range(1,23)]:\n",
+    "    mf.write(cmd.format(chrom=chrom) + '\\n')\n",
+    "mf.close()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# GTEx data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "version 8: `/project2/compbio/GTEx_dbGaP/GTEx_Analysis_2017-06-05_v8/eqtl`"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "version 7: need to download from here https://www.gtexportal.org/home/datasets."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /home/simingz/causalTWAS/GTEx_v7_eQTL"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "wget https://storage.googleapis.com/gtex_analysis_v7/single_tissue_eqtl_data/GTEx_Analysis_v7_eQTL.tar.gz"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "GTEx_Analysis_v7_eQTL/Adipose_Subcutaneous.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Adipose_Subcutaneous.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Adipose_Visceral_Omentum.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Adipose_Visceral_Omentum.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Adrenal_Gland.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Adrenal_Gland.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Artery_Aorta.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Artery_Aorta.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Artery_Coronary.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Artery_Coronary.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Artery_Tibial.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Artery_Tibial.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Amygdala.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Amygdala.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Anterior_cingulate_cortex_BA24.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Anterior_cingulate_cortex_BA24.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Caudate_basal_ganglia.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Caudate_basal_ganglia.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Cerebellar_Hemisphere.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Cerebellar_Hemisphere.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Cerebellum.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Cerebellum.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Cortex.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Cortex.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Frontal_Cortex_BA9.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Frontal_Cortex_BA9.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Hippocampus.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Hippocampus.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Hypothalamus.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Hypothalamus.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Nucleus_accumbens_basal_ganglia.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Nucleus_accumbens_basal_ganglia.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Putamen_basal_ganglia.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Putamen_basal_ganglia.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Spinal_cord_cervical_c-1.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Spinal_cord_cervical_c-1.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Substantia_nigra.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Brain_Substantia_nigra.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Breast_Mammary_Tissue.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Breast_Mammary_Tissue.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Cells_EBV-transformed_lymphocytes.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Cells_EBV-transformed_lymphocytes.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Cells_Transformed_fibroblasts.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Cells_Transformed_fibroblasts.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Colon_Sigmoid.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Colon_Sigmoid.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Colon_Transverse.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Colon_Transverse.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Esophagus_Gastroesophageal_Junction.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Esophagus_Gastroesophageal_Junction.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Esophagus_Mucosa.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Esophagus_Mucosa.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Esophagus_Muscularis.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Esophagus_Muscularis.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Heart_Atrial_Appendage.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Heart_Atrial_Appendage.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Heart_Left_Ventricle.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Heart_Left_Ventricle.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Liver.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Liver.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Lung.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Lung.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Minor_Salivary_Gland.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Minor_Salivary_Gland.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Muscle_Skeletal.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Muscle_Skeletal.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Nerve_Tibial.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Nerve_Tibial.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Ovary.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Ovary.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Pancreas.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Pancreas.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Pituitary.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Pituitary.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Prostate.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Prostate.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Skin_Not_Sun_Exposed_Suprapubic.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Skin_Not_Sun_Exposed_Suprapubic.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Skin_Sun_Exposed_Lower_leg.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Skin_Sun_Exposed_Lower_leg.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Small_Intestine_Terminal_Ileum.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Small_Intestine_Terminal_Ileum.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Spleen.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Spleen.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Stomach.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Stomach.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Testis.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Testis.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Thyroid.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Thyroid.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Uterus.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Uterus.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Vagina.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Vagina.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Whole_Blood.v7.egenes.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL/Whole_Blood.v7.signif_variant_gene_pairs.txt.gz\n"
+     ]
+    }
+   ],
+   "source": [
+    "tar -xvzf GTEx_Analysis_v7_eQTL.tar.gz"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "mv GTEx_Analysis_v7_eQTL/Adipose_S* ."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "rm -r GTEx_Analysis_v7_eQTL"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Adipose_Subcutaneous.v7.egenes.txt.gz\n",
+      "Adipose_Subcutaneous.v7.signif_variant_gene_pairs.txt.gz\n",
+      "GTEx_Analysis_v7_eQTL.tar.gz\n",
+      "readme.txt\n"
+     ]
+    }
+   ],
+   "source": [
+    "ls"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "--2021-04-17 10:50:25--  https://storage.googleapis.com/gtex_analysis_v7/reference/GTEx_Analysis_2016-01-15_v7_WholeGenomeSeq_635Ind_PASS_AB02_GQ20_HETX_MISS15_PLINKQC.lookup_table.txt.gz\n",
+      "Resolving storage.googleapis.com (storage.googleapis.com)... 172.217.5.16, 172.217.4.80, 172.217.4.208, ...\n",
+      "Connecting to storage.googleapis.com (storage.googleapis.com)|172.217.5.16|:443... connected.\n",
+      "HTTP request sent, awaiting response... 200 OK\n",
+      "Length: 461926948 (441M) [application/gzip]\n",
+      "Saving to: ‘GTEx_Analysis_2016-01-15_v7_WholeGenomeSeq_635Ind_PASS_AB02_GQ20_HETX_MISS15_PLINKQC.lookup_table.txt.gz’\n",
+      "\n",
+      "100%[======================================>] 461,926,948  100MB/s   in 4.7s   \n",
+      "\n",
+      "2021-04-17 10:50:30 (93.8 MB/s) - ‘GTEx_Analysis_2016-01-15_v7_WholeGenomeSeq_635Ind_PASS_AB02_GQ20_HETX_MISS15_PLINKQC.lookup_table.txt.gz’ saved [461926948/461926948]\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "wget https://storage.googleapis.com/gtex_analysis_v7/reference/GTEx_Analysis_2016-01-15_v7_WholeGenomeSeq_635Ind_PASS_AB02_GQ20_HETX_MISS15_PLINKQC.lookup_table.txt.gz"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Create GEMMA format eQTL summary statitics file."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "setwd(\"/home/simingz/causalTWAS/GTEx_v7_eQTL\")\n",
+    "lookupfile <- \"GTEx_Analysis_2016-01-15_v7_WholeGenomeSeq_635Ind_PASS_AB02_GQ20_HETX_MISS15_PLINKQC.lookup_table.txt.gz\"\n",
+    "egenefile <- \"Adipose_Subcutaneous.v7.egenes.txt.gz\"\n",
+    "eqtlfile <- \"Adipose_Subcutaneous.v7.signif_variant_gene_pairs.txt.gz\"\n",
+    "\n",
+    "library(data.table)\n",
+    "eqtl <- fread(eqtlfile)\n",
+    "ref <- fread(lookupfile)\n",
+    "a <- merge(eqtl, ref, all.x = T, by = \"variant_id\")\n",
+    "rm(ref, eqtl)\n",
+    "egene <- fread(egenefile)\n",
+    "egene <- egene[, 1:11, drop =F]\n",
+    "out <- merge(a, egene, all.x = T, by = \"gene_id\")\n",
+    "write.table(out , file= \"Adipose_Subcutaneous.v7.eQTL.txt\" , row.names=F, col.names=T, sep=\"\\t\", quote = F)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gzip Adipose_Subcutaneous.v7.eQTL.txt"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## LOCUSZOOM"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "contains LD and gene annotation data sources for visualization"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /home/simingz/causalTWAS/locuszoom\n",
+    "wget https://statgen.sph.umich.edu/locuszoom/download/locuszoom_1.4.tgz"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Define boudaries: LD block"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cp /project2/xinhe/CANCER_GERMLINE/ANNOTATIONS/Euro_LD_Chunks.bed /home/simingz/causalTWAS/simulations/shared_files"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#R\n",
+    "a <- read.table(\"Euro_LD_Chunks.bed\", header =F)\n",
+    "for (i in unique(a$V1)){\n",
+    "    out <- a[a$V1 ==i, ]\n",
+    "    colnames(out) = c(\"chrom\", \"p0\", \"p1\", \"idx\")\n",
+    "    write.table(out, file = paste0(\"chr\", i, \"-Euro_LD_Chunks.txt\"), row.names=F, col.names=T, sep=\"\\t\", quote = F)\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Share LD reference genotype data with Wes"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd  /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s40.22"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "put *_s40.22.2* /home/szhao1/causal-TWAS/genotype_data/LD_ref_simulations/ukb_s40.22.2\n",
+    "lcd /home/simingz/causalTWAS/ukbiobank/ukb_pgen_s80.45\n",
+    "put *s80.45.2* /home/szhao1/causal-TWAS/genotype_data/LD_ref_simulations/ukb_s80.45.2"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Wes generated LD R matrices for simulation data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /home/simingz/causalTWAS/ukbiobank"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "mkdir ukb_LDR_s40.22; mkdir ukb_LDR_s80.45"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd /home/simingz/causalTWAS/ukbiobank/ukb_LDR_s40.22/LDR"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "sftp> packet_write_wait: Connection to 10.50.178.36 port 22: Broken pipe\n"
+     ]
+    }
+   ],
+   "source": [
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /gpfs/data/stephens-lab/causal-TWAS/genotype_data/LD_ref_simulations/ukb_s40.22.2_LDR/LDR\n",
+    "get *"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "setwd(\"/home/simingz/causalTWAS/ukbiobank/ukb_LDR_s40.22/\")\n",
+    "\n",
+    "library(ctwas)\n",
+    "library(tools)\n",
+    "\n",
+    "# specify LD reference\n",
+    "ldref_dir <- \"/home/simingz/causalTWAS/ukbiobank/ukb_pgen_s40.22/\"\n",
+    "ldref_prefix <- \"ukb_chr\"\n",
+    "ldref_suffix <- \"_s40.22.2\"\n",
+    "ldref_filtype <- \".pgen\"\n",
+    "ldref_files <- paste0(ldref_dir, \"/\", ldref_prefix, 1:22, ldref_suffix,ldref_filtype)\n",
+    "\n",
+    "# specify LD regions\n",
+    "ld_regions <- \"EUR\"\n",
+    "ld_regions_custom = NULL\n",
+    "\n",
+    "# specify output\n",
+    "out_filestem <- paste0(\"ukb\", ldref_suffix, \"_chr\")\n",
+    "out_dir <- \"./LDR\"\n",
+    "\n",
+    "####################\n",
+    "\n",
+    "dir.create(out_dir, showWarnings=F)\n",
+    "if (is.null(ld_regions_custom)) {\n",
+    "  #ld_regions <- match.arg(ld_regions)\n",
+    "  regionfile <- system.file(\"extdata\", \"ldetect\", paste0(ld_regions, \".bed\"), package = \"ctwas\")\n",
+    "} else {\n",
+    "  regionfile <- ld_regions_custom\n",
+    "}\n",
+    "reg <- read.table(regionfile, header = T, stringsAsFactors = F)\n",
+    "if (is.character(reg$chr)) {\n",
+    "  reg$chr <- readr::parse_number(reg$chr)\n",
+    "}\n",
+    "reg <- reg[order(reg$chr, reg$start), ]\n",
+    "ld_pvarfs <- sapply(ldref_files, prep_pvar, outputdir = out_dir)\n",
+    "for (b in 1:length(ld_pvarfs)) {\n",
+    "  print(paste0(\"chromosome \", b))\n",
+    "  ld_pvarf <- ld_pvarfs[b]\n",
+    "  snpinfo <- read_pvar(ld_pvarf)\n",
+    "  if (unique(snpinfo$chrom) != b) {\n",
+    "    stop(\"Input genotype file not split by chromosome or not in correct order\")\n",
+    "  }\n",
+    "  regions <- reg[reg$chr == b, ]\n",
+    "  ld_pgen <- prep_pgen(pgenf = ldref_files[b], ld_pvarfs[b])\n",
+    "  for (rn in 1:nrow(regions)) {\n",
+    "    print(rn)\n",
+    "    p0 <- regions[rn, \"start\"]\n",
+    "    p1 <- regions[rn, \"stop\"]\n",
+    "    sidx <- which(snpinfo$chrom == b & snpinfo$pos >= p0 & snpinfo$pos < p1) \n",
+    "    # X.g <- read_pgen(ld_pgen, variantidx = sidx)\n",
+    "    # R_snp <- Rfast::cora(X.g)\n",
+    "    # saveRDS(R_snp, file=paste0(out_dir,\"/\", out_filestem, b, \".R_snp.\", p0, \"_\", p1, \".RDS\"))\n",
+    "    write.table(snpinfo[sidx,] , file= paste0(out_dir,\"/\", out_filestem, b, \".R_snp.\", p0, \"_\", p1, \".Rvar\") , row.names=F, col.names=T, sep=\"\\t\", quote = F) \n",
+    "  }\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd ../ukb_LDR_s80.45/LDR"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "setwd(\"/home/simingz/causalTWAS/ukbiobank/ukb_LDR_s80.45/\")\n",
+    "\n",
+    "library(ctwas)\n",
+    "library(tools)\n",
+    "\n",
+    "# specify LD reference\n",
+    "ldref_dir <- \"/home/simingz/causalTWAS/ukbiobank/ukb_pgen_s80.45/\"\n",
+    "ldref_prefix <- \"ukb_chr\"\n",
+    "ldref_suffix <- \"_s80.45.2\"\n",
+    "ldref_filtype <- \".pgen\"\n",
+    "ldref_files <- paste0(ldref_dir, \"/\", ldref_prefix, 1:22, ldref_suffix,ldref_filtype)\n",
+    "\n",
+    "# specify LD regions\n",
+    "ld_regions <- \"EUR\"\n",
+    "ld_regions_custom = NULL\n",
+    "\n",
+    "# specify output\n",
+    "out_filestem <- paste0(\"ukb\", ldref_suffix, \"_chr\")\n",
+    "out_dir <- \"./LDR\"\n",
+    "\n",
+    "####################\n",
+    "\n",
+    "dir.create(out_dir, showWarnings=F)\n",
+    "if (is.null(ld_regions_custom)) {\n",
+    "  #ld_regions <- match.arg(ld_regions)\n",
+    "  regionfile <- system.file(\"extdata\", \"ldetect\", paste0(ld_regions, \".bed\"), package = \"ctwas\")\n",
+    "} else {\n",
+    "  regionfile <- ld_regions_custom\n",
+    "}\n",
+    "reg <- read.table(regionfile, header = T, stringsAsFactors = F)\n",
+    "if (is.character(reg$chr)) {\n",
+    "  reg$chr <- readr::parse_number(reg$chr)\n",
+    "}\n",
+    "reg <- reg[order(reg$chr, reg$start), ]\n",
+    "ld_pvarfs <- sapply(ldref_files, prep_pvar, outputdir = out_dir)\n",
+    "for (b in 1:length(ld_pvarfs)) {\n",
+    "  print(paste0(\"chromosome \", b))\n",
+    "  ld_pvarf <- ld_pvarfs[b]\n",
+    "  snpinfo <- read_pvar(ld_pvarf)\n",
+    "  if (unique(snpinfo$chrom) != b) {\n",
+    "    stop(\"Input genotype file not split by chromosome or not in correct order\")\n",
+    "  }\n",
+    "  regions <- reg[reg$chr == b, ]\n",
+    "  ld_pgen <- prep_pgen(pgenf = ldref_files[b], ld_pvarfs[b])\n",
+    "  for (rn in 1:nrow(regions)) {\n",
+    "    print(rn)\n",
+    "    p0 <- regions[rn, \"start\"]\n",
+    "    p1 <- regions[rn, \"stop\"]\n",
+    "    sidx <- which(snpinfo$chrom == b & snpinfo$pos >= p0 & snpinfo$pos < p1) \n",
+    "    # X.g <- read_pgen(ld_pgen, variantidx = sidx)\n",
+    "    # R_snp <- Rfast::cora(X.g)\n",
+    "    # saveRDS(R_snp, file=paste0(out_dir,\"/\", out_filestem, b, \".R_snp.\", p0, \"_\", p1, \".RDS\"))\n",
+    "    write.table(snpinfo[sidx,] , file= paste0(out_dir,\"/\", out_filestem, b, \".R_snp.\", p0, \"_\", p1, \".Rvar\") , row.names=F, col.names=T, sep=\"\\t\", quote = F) \n",
+    "  }\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sftp szhao1@cri-syncmon.cri.uchicago.edu\n",
+    "cd /gpfs/data/stephens-lab/causal-TWAS/genotype_data/LD_ref_simulations/ukb_s80.45.2_LDR/LDR\n",
+    "get *"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# [PredictDB GTEX v8](http://predictdb.org/)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd ~/causalTWAS"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cd prediXcan"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "wget https://zenodo.org/record/3519321/files/elastic_net_eqtl.tar?download=1\n",
+    "tar -xvf elastic_net_eqtl.tar"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# LD regions files"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "ldetect direct download (hg19)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "liftover by UCSC online, hg19 --> hg38, in AFR, two regions with boundary \"none\", deleted in liftover, only kept complete regions as are missing after liftover"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Bash",
+   "language": "bash",
+   "name": "bash"
+  },
+  "language_info": {
+   "codemirror_mode": "shell",
+   "file_extension": ".sh",
+   "mimetype": "text/x-sh",
+   "name": "bash"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
