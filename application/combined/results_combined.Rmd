@@ -1,0 +1,429 @@
+---
+title: "multitrait_allweight_figures"
+author: "wesleycrouse"
+date: "2022-07-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+```{r}
+
+library(ggplot2)
+library(cowplot)
+
+```
+
+## Load all weight analyses for each trait 
+
+```{r}
+
+df_all <- list()
+trait_names <- data.frame(trait_id=as.character(),
+                  trait_name=as.character(),
+                  trait_abbr=as.character())
+
+####################
+
+trait_id <- "ebi-a-GCST004131"
+trait_name <- "Inflammatory Bowel Disease"
+trait_abbr <- "IBD"
+trait_dir <- paste0("/project2/mstephens/wcrouse/UKB_analysis_allweights_corrected/", trait_id)
+
+load(paste(trait_dir, "results_df_nolnc.RData", sep="/"))
+trait_names <- rbind(trait_names, data.frame(trait_id, trait_name, trait_abbr))
+df_all[[trait_id]] <- df
+
+####################
+
+trait_id <- "scz-2018"
+trait_name <- "Schizophrenia"
+trait_abbr <- "SCZ"
+trait_dir <- paste0("/project2/mstephens/wcrouse/UKB_analysis_allweights_scz/", trait_id)
+
+load(paste(trait_dir, "results_df_nolnc.RData", sep="/"))
+trait_names <- rbind(trait_names, data.frame(trait_id, trait_name, trait_abbr))
+df_all[[trait_id]] <- df
+
+####################
+
+trait_id <- "ukb-a-360"
+trait_name <- "Systolic Blood Pressure"
+trait_abbr <- "SBP"
+trait_dir <- paste0("/project2/mstephens/wcrouse/UKB_analysis_allweights_simpleharmonization/", trait_id)
+
+load(paste(trait_dir, "results_df_nolnc.RData", sep="/"))
+trait_names <- rbind(trait_names, data.frame(trait_id, trait_name, trait_abbr))
+df_all[[trait_id]] <- df
+
+```
+
+## Number of genes imputed for each trait and weight
+
+```{r}
+
+
+for (i in 1:length(df_all)){
+  n_genes <- sapply(df_all[[i]], function(x){nrow(x$gene_pips)})
+  weight <- names(n_genes)
+  weight <- sapply(weight, function(x){paste(unlist(strsplit(x, "_")), collapse=" ")})
+  df_plot_trait <- data.frame(n_genes=n_genes, weight=weight, trait=trait_names$trait_abbr[i])
+  rownames(df_plot_trait) <- NULL
+  
+  if (i==1){
+    df_plot <- df_plot_trait
+  } else {
+    df_plot <- rbind(df_plot, df_plot_trait)
+  }
+}
+
+####################
+
+#minimum number of genes
+df_plot[which.min(df_plot$n_genes),]
+
+#maximum number of genes
+df_plot[which.max(df_plot$n_genes),]
+
+####################
+#average over tissues
+df_plot <- df_plot[rev(1:nrow(df_plot)),]
+
+df_plot <- aggregate(n_genes~weight, df_plot, mean)
+
+pdf(file = "output/Figure_S11.pdf", width = 7, height = 8)
+
+par(mar=c(4.1, 9.6, 0.6, 1.6))
+
+barplot(df_plot$n_genes, names.arg=df_plot$weight, las=2, xlab="Number of Imputed Genes", main="",
+        cex.lab=0.8,
+        cex.axis=0.8,
+        cex.names=0.6,
+        col=c("darkblue", "grey50"),
+        axis.lty=1, 
+        horiz=T,
+        las=1,
+        xlim=c(0,12000))
+
+grid(nx = NULL,
+     ny = NA,
+     lty = 2, col = "grey", lwd = 1)
+
+dev.off()
+
+```
+
+## Estimated parameters for each trait and weight
+
+### Prior inclusion
+
+```{r}
+#prior inclusion
+
+for (i in 1:length(df_all)){
+  prior <- sapply(df_all[[i]], function(x){x$prior})
+  prior <- prior[1,]
+  weight <- names(prior)
+  weight <- sapply(weight, function(x){paste(unlist(strsplit(x, "_")), collapse=" ")})
+  df_plot_trait <- data.frame(prior=prior, weight=weight, trait=trait_names$trait_abbr[i])
+  rownames(df_plot_trait) <- NULL
+  
+  if (i==1){
+    df_plot <- df_plot_trait
+  } else {
+    df_plot <- rbind(df_plot, df_plot_trait)
+  }
+}
+
+df_plot$trait <- factor(df_plot$trait , levels=c("IBD", "SCZ", "SBP"))
+
+p <- ggplot(df_plot, aes(x=trait, y=prior)) + geom_boxplot(fill='#A4A4A4', color="black", outlier.shape=NA) + expand_limits(y=0)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.2))
+p <- p + theme_bw()
+p <- p + xlab("Trait") + ylab("Prior Inclusion Probability")
+
+####################
+
+#minimum prior inclusion
+df_plot[which.min(df_plot$prior),]
+
+#maximum prior inclusion
+df_plot[which.max(df_plot$prior),]
+
+####################
+
+p_pi <- p + ylab(bquote(pi)) + ggtitle("Proportion Causal")
+
+```
+
+### Prior variance
+
+```{r}
+#prior variance
+
+for (i in 1:length(df_all)){
+  prior_var <- sapply(df_all[[i]], function(x){x$prior_var})
+  prior_var <- prior_var[1,]
+  weight <- names(prior_var)
+  weight <- sapply(weight, function(x){paste(unlist(strsplit(x, "_")), collapse=" ")})
+  df_plot_trait <- data.frame(prior_var=prior_var, weight=weight, trait=trait_names$trait_abbr[i])
+  rownames(df_plot_trait) <- NULL
+  
+  if (i==1){
+    df_plot <- df_plot_trait
+  } else {
+    df_plot <- rbind(df_plot, df_plot_trait)
+  }
+}
+
+df_plot$trait <- factor(df_plot$trait , levels=c("IBD", "SCZ", "SBP"))
+
+p <- ggplot(df_plot, aes(x=trait, y=prior_var)) + geom_boxplot(fill='#A4A4A4', color="black", outlier.shape=NA) + expand_limits(y=0)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.2))
+p <- p + theme_bw()
+p <- p + xlab("Trait") + ylab("Prior Variance")
+
+####################
+
+#minimum prior variance
+df_plot[which.min(df_plot$prior_var),]
+
+#maximum prior variance
+df_plot[which.max(df_plot$prior_var),]
+
+####################
+
+p_sigma2 <- p + ylab(bquote(sigma^2)) + ggtitle("Effect Size")
+
+
+```
+
+### Enrichment
+
+```{r}
+
+for (i in 1:length(df_all)){
+  prior <- sapply(df_all[[i]], function(x){x$prior})
+  enrich <- prior[1,]/prior[2,]
+  weight <- names(enrich)
+  weight <- sapply(weight, function(x){paste(unlist(strsplit(x, "_")), collapse=" ")})
+  df_plot_trait <- data.frame(enrich=enrich, weight=weight, trait=trait_names$trait_abbr[i])
+  rownames(df_plot_trait) <- NULL
+  
+  if (i==1){
+    df_plot <- df_plot_trait
+  } else {
+    df_plot <- rbind(df_plot, df_plot_trait)
+  }
+}
+
+
+df_plot$trait <- factor(df_plot$trait , levels=c("IBD", "SCZ", "SBP"))
+
+p <- ggplot(df_plot, aes(x=trait, y=enrich)) + geom_boxplot(fill='#A4A4A4', color="black", outlier.shape=NA) + expand_limits(y=0)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.2))
+p <- p + theme_bw()
+p <- p + xlab("Trait") + ylab("Enrichment")
+
+####################
+
+p_enrich <- p + ylab(bquote(pi[G]/pi[S])) + ggtitle("Enrichment")
+
+
+```
+
+### Proportion of variance explained
+
+```{r}
+#prior variance explained
+
+for (i in 1:length(df_all)){
+  pve <- sapply(df_all[[i]], function(x){x$pve})
+  pve <- pve[1,]
+  weight <- names(pve)
+  weight <- sapply(weight, function(x){paste(unlist(strsplit(x, "_")), collapse=" ")})
+  df_plot_trait <- data.frame(pve=pve, weight=weight, trait=trait_names$trait_abbr[i])
+  rownames(df_plot_trait) <- NULL
+  
+  if (i==1){
+    df_plot <- df_plot_trait
+  } else {
+    df_plot <- rbind(df_plot, df_plot_trait)
+  }
+}
+
+
+df_plot$trait <- factor(df_plot$trait , levels=c("IBD", "SCZ", "SBP"))
+
+p <- ggplot(df_plot, aes(x=trait, y=pve)) + geom_boxplot(fill='#A4A4A4', color="black", outlier.shape=NA) + expand_limits(y=0)
+p <- p + geom_jitter(shape=16, position=position_jitter(0.2))
+p <- p + theme_bw()
+p <- p + xlab("Trait") + ylab("Proportion of Variance Explained")
+
+####################
+
+#minimum PVE
+df_plot[which.min(df_plot$pve),]
+
+#maximum PVE
+df_plot[which.max(df_plot$pve),]
+
+####################
+
+p_pve <- p + ylab(bquote(h^2[G])) + ggtitle("PVE")
+
+```
+
+## Plot of all estimated parameters for each trait and weight
+
+```{r}
+
+title_size <- 12
+
+p_pi <- p_pi + theme(plot.title=element_text(size=title_size))
+p_sigma2 <- p_sigma2 + theme(plot.title=element_text(size=title_size))
+p_enrich <- p_enrich + theme(plot.title=element_text(size=title_size))
+p_pve <- p_pve + theme(plot.title=element_text(size=title_size))
+
+pdf(file = "output/Figure_S12.pdf", width = 6, height = 4)
+
+plot_grid(p_pi, p_sigma2, p_enrich, p_pve)
+
+dev.off()
+
+```
+
+## Table of all estimated parameters for each trait and weight
+
+```{r}
+
+for (i in 1:length(df_all)){
+  prior <- sapply(df_all[[i]], function(x){x$prior})
+  rownames(prior) <- c("prior_g", "prior_s")
+  
+  enrich <- prior[1,]/prior[2,]
+  
+  prior_var <- sapply(df_all[[i]], function(x){x$prior_var})
+  rownames(prior_var) <- c("prior_var_g", "prior_var_s")
+  
+  pve <- sapply(df_all[[i]], function(x){x$pve})
+  rownames(pve) <- c("pve_g", "pve_s")
+  
+  h2 <- colSums(pve)
+  
+  prop_h2_g <- apply(pve, 2, function(x){x[1]/sum(x)})
+  
+  weight <- colnames(prior)
+  trait <- trait_names$trait_abbr[i]
+  
+  parameter_table_current <- as.data.frame(t(rbind(prior, prior_var, enrich, pve, h2, prop_h2_g)))
+  
+  parameter_table_current <- cbind(trait, weight, parameter_table_current)
+  rownames(parameter_table_current) <- NULL
+    
+  if (i==1){
+    parameter_table <- parameter_table_current
+  } else {
+    parameter_table <- rbind(parameter_table, parameter_table_current)
+  }
+}
+
+write.csv(parameter_table, file="output/Table_S6.csv" ,row.names=F)
+
+```
+
+## Number of genes in top tissue groups for each trait
+
+```{r}
+
+weight_groups <- as.data.frame(matrix(c("Adipose_Subcutaneous", "Adipose",
+                                        "Adipose_Visceral_Omentum", "Adipose",
+                                        "Adrenal_Gland", "Endocrine",
+                                        "Artery_Aorta", "Cardiovascular",                        
+                                        "Artery_Coronary", "Cardiovascular",
+                                        "Artery_Tibial", "Cardiovascular",
+                                        "Brain_Amygdala", "CNS",
+                                        "Brain_Anterior_cingulate_cortex_BA24", "CNS",
+                                        "Brain_Caudate_basal_ganglia", "CNS",
+                                        "Brain_Cerebellar_Hemisphere", "CNS",
+                                        "Brain_Cerebellum", "CNS",
+                                        "Brain_Cortex", "CNS",
+                                        "Brain_Frontal_Cortex_BA9", "CNS",
+                                        "Brain_Hippocampus", "CNS",
+                                        "Brain_Hypothalamus", "CNS",
+                                        "Brain_Nucleus_accumbens_basal_ganglia", "CNS",
+                                        "Brain_Putamen_basal_ganglia", "CNS",
+                                        "Brain_Spinal_cord_cervical_c-1", "CNS",
+                                        "Brain_Substantia_nigra", "CNS",
+                                        "Breast_Mammary_Tissue", "None",
+                                        "Cells_Cultured_fibroblasts", "Skin",
+                                        "Cells_EBV-transformed_lymphocytes", "Blood or Immune",
+                                        "Colon_Sigmoid", "Digestive",
+                                        "Colon_Transverse", "Digestive",
+                                        "Esophagus_Gastroesophageal_Junction", "Digestive",
+                                        "Esophagus_Mucosa", "Digestive",
+                                        "Esophagus_Muscularis", "Digestive",
+                                        "Heart_Atrial_Appendage", "Cardiovascular",
+                                        "Heart_Left_Ventricle", "Cardiovascular",
+                                        "Kidney_Cortex", "None",
+                                        "Liver", "None",
+                                        "Lung", "None",
+                                        "Minor_Salivary_Gland", "None",
+                                        "Muscle_Skeletal", "None",
+                                        "Nerve_Tibial", "None",
+                                        "Ovary", "None",
+                                        "Pancreas", "None",
+                                        "Pituitary", "Endocrine",
+                                        "Prostate", "None",
+                                        "Skin_Not_Sun_Exposed_Suprapubic", "Skin",
+                                        "Skin_Sun_Exposed_Lower_leg", "Skin",
+                                        "Small_Intestine_Terminal_Ileum", "Digestive",
+                                        "Spleen", "Blood or Immune",
+                                        "Stomach", "Digestive",
+                                        "Testis", "Endocrine",
+                                        "Thyroid", "Endocrine",
+                                        "Uterus", "None",
+                                        "Vagina", "None",
+                                        "Whole_Blood", "Blood or Immune"),
+                                      nrow=49, ncol=2, byrow=T), stringsAsFactors=F)
+colnames(weight_groups) <- c("weight", "group")
+
+n_top_tissue_groups <- 2
+
+for (i in 1:length(df_all)){
+  trait <- trait_names$trait_abbr[trait_names$trait_id==names(df_all)[i]]
+  ctwas_genes_by_tissue <- sapply(df_all[[i]], function(x){length(x$ctwas)})
+  ctwas_genes_by_tissue <- rev(sort(ctwas_genes_by_tissue))[1:n_top_tissue_groups]
+  
+  df_plot_trait <- data.frame(weight=as.character(names(ctwas_genes_by_tissue)), trait=as.character(trait), n_ctwas=as.numeric(ctwas_genes_by_tissue))
+  rownames(df_plot_trait) <- NULL
+
+  if (i==1){
+    df_plot <- df_plot_trait
+  } else {
+    df_plot <- rbind(df_plot, df_plot_trait)
+  }
+
+}
+
+df_plot$weight <- sapply(as.character(df_plot$weight), function(x){paste(unlist(strsplit(x, "_")), collapse=" ")})
+
+df_plot <-  df_plot[order(as.character(df_plot$trait)),]
+
+pdf(file = "output/Figure_6b.pdf", width = 2.75, height = 3)
+
+par(mar=c(6.6, 3.6, 1.6, 0.6))
+
+barplot(df_plot$n_ctwas, names.arg=df_plot$weight, las=2, ylab="Number of cTWAS Genes", main="",
+        cex.lab=0.7,
+        cex.axis=0.7,
+        cex.names=0.7,
+        space=c(0.4, 0, 0.4, 0, 0.4, 0),
+        col=rep(c("grey50", "grey"),3),
+        axis.lty=1)
+
+dev.off()
+
+```
