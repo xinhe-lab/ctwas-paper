@@ -1,27 +1,27 @@
 
 codedir = "~/causalTWAS/causal-TWAS/code/" # add / at end
-pgenfs = "/home/simingz/causalTWAS/ukbiobank/ukb_pgen_s80.45/ukb-s80.45_pgenfs.txt"
-ld_pgenfs = "/home/simingz/causalTWAS/ukbiobank/ukb_pgen_s80.45/ukb-s80.45.2_pgenfs.txt"
-ld_R_dir = "/project2/mstephens/causalTWAS/ukbiobank/ukb_LDR_s80.45/s80.45.2_LDR"
+pgenfs = "/home/simingz/causalTWAS/ukbiobank/ukb_pgen_s200.113/ukb-s200.113_pgenfs.txt"
+ld_pgenfs = "/home/simingz/causalTWAS/ukbiobank/ukb_pgen_s200.113/ukb-s200.113.2_pgenfs.txt"
+ld_R_dir = "na"
+# ld_R_dir = "/project2/mstephens/causalTWAS/ukbiobank/ukb_LDR_s80.45/s80.45.2_LDR"
 weight = "/home/simingz/causalTWAS/fusion_weights/Adipose_Subcutaneous"
-
-outputdir = "/home/simingz/causalTWAS/simulations/simulation_ctwas_rss_20210416/" # add / at end
-runtag = "ukb-s80.45-adi"
+outputdir = "/home/simingz/causalTWAS/simulations/simulation_ctwas_rss_20230321/" # add / at end
+runtag = "ukb-s200.113-adi"
 configtags = [str(i) for i in range(1,2)]
-simutags = [ str(i) + "-" + str(j) for i in range(2,5) for j in range(1,6)]
+simutags = [ str(i) + "-" + str(j) for i in range(1,11) for j in range(1,6)]
 
 rule all:
     input:
         [outputdir + runtag +'_simu'+ simutag + '_config' + configtag + ".susieIrss.txt" for simutag in simutags for configtag in configtags] + [outputdir + runtag + '_simu'+ simutag +'.exprgwas.txt.gz' for simutag in simutags]
-        # + [outputdir + runtag +'_simu'+ simutag + '_config' + configtag +'_LDR' + ".susieIrss.txt" for simutag in simutags for configtag in configtags]
+        #[outputdir + runtag +'_simu'+ simutag + '_config' + configtag +'_LDR' + ".susieIrss.txt" for simutag in simutags for configtag in configtags]
 
 
 rule simu_prep_param:
     params:
-        pve_gene = [0.1,   0.1,   0.05,  0.05,  0.2,   0.2,   0.1,  0.1,  0.02,  0.02],
-        pi1_gene = [0.05,  0.015, 0.05,  0.015, 0.05,  0.015, 0.05, 0.015,0.05,  0.015],
-        pve_snp  = [0.5,   0.5,   0.5,   0.5,   0.5,   0.5,   0.3,  0.3,  0.5,   0.5],
-        pi1_snp  = [2.5e-4,2.5e-4,2.5e-4,2.5e-4,2.5e-4,2.5e-4,1e-4, 1e-4, 2.5e-4,2.5e-4]
+        pve_gene = [0.005,  0.01,   0.05,   0.1,  0.15, 0.02],
+        pi1_gene = [0.015, 0.015,  0.015, 0.015, 0.015, 0.015],
+        pve_snp  = [0.2,   0.2,     0.2,    0.2,   0.2, 0.2],
+        pi1_snp  = [2.5e-4,2.5e-4,2.5e-4,2.5e-4,2.5e-4, 2.5e-4]
     output:
         [outputdir +'simu' + simutag + '_param.R' for simutag in simutags]
     run:
@@ -34,6 +34,7 @@ rule simu_prep_param:
                         'pi_theta <- ' + str(params.pi1_snp[int(t1)-1]),
                         'SED <- ' + str(950 + int(t2))]
                 outf.writelines(s + '\n' for s in lines)
+
 
 rule impute_expr:
     input:

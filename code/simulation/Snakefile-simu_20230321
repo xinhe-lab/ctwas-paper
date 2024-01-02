@@ -8,8 +8,7 @@ weight = "/home/simingz/causalTWAS/fusion_weights/Adipose_Subcutaneous"
 outputdir = "/home/simingz/causalTWAS/simulations/simulation_ctwas_rss_20230321/" # add / at end
 runtag = "ukb-s200.113-adi"
 configtags = [str(i) for i in range(1,2)]
-simutags = [ str(i) + "-" + str(j) for i in range(2,3) for j in range(1,31)] + [ str(i) + "-" + str(j) for i in range(3,6) for j in range(1,11)] + [ str(i) + "-" + str(j) for i in range(6,7) for j in range(1,21)]
-# [ str(i) + "-" + str(j) for i in range(1,2) for j in range(1,71)]
+simutags = [ str(i) + "-" + str(j) for i in range(1,11) for j in range(1,6)]
 
 rule all:
     input:
@@ -106,7 +105,7 @@ rule ctwas_rss:
         outname = runtag + '_simu{simutag}_config{configtag}',
         outputdir = outputdir
     shell:
-        'Rscript ' + codedir + 'run_ctwas_rss2.R {input.snpz} {input.ld_pgenfs} {input.weight} {input.configfile} \{params.outname_expr} {params.outname} {params.outputdir}'
+        'Rscript ' + codedir + 'run_ctwas_rss.R {input.snpz} {input.ld_pgenfs} {input.weight} {input.configfile} \{params.outname_expr} {params.outname} {params.outputdir}'
 
 
 rule ctwas_rss_LDR:

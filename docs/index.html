@@ -288,8 +288,8 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This website includes tutorials to reproduce the analysis results
-presented in the ctwas paper:</p>
+<p>This repository contains code and data resources to accompany our
+research paper:</p>
 <blockquote>
 <p>Siming, Z., Wesley, C., Sheng, Q., Kaixuan, L., Stephens, M. &amp;
 Xin, H. (2022). Adjusting for genetic confounders in transcriptome-wide
@@ -299,10 +299,76 @@ href="https://doi.org/10.1101/2022.09.27.509700"
 class="uri">https://doi.org/10.1101/2022.09.27.509700</a></p>
 </blockquote>
 <p>The <code>ctwas</code> R package can be accessed <a
-href="https://github.com/xinhe-lab/ctwas">here</a>.</p>
+href="https://github.com/xinhe-lab/ctwas">here</a>. The main analyses in
+the paper was obtained using ctwas v0.1.29.</p>
 </div>
-<div id="reproduce-the-simulation-results" class="section level1">
-<h1>Reproduce the simulation results</h1>
+<div id="perform-a-test-simulation" class="section level1">
+<h1>Perform a test simulation</h1>
+<p>An example simulation pipepline is shown as
+<code>code/simulation/Snakefile-test</code>. It was written in the <a
+href="https://snakemake.readthedocs.io/en/stable/">snakemake</a>
+workflow language.</p>
+<p>[sheng can you add instructions here]?</p>
+</div>
+<div id="simulation-performed-in-the-paper." class="section level1">
+<h1>Simulation performed in the paper.</h1>
+<div id="input-data-for-simulation" class="section level2">
+<h2>Input data for simulation</h2>
+<ul>
+<li>Genotype data.</li>
+</ul>
+<p>The individual genotype data we used is from UKB biobank, randomly
+selecting 80000 or 200000 samples. We then filtered samples. The columns
+selected for filtering samples are as follows: - sex (31) - UK Biobank
+assessment centre (54) - age (21022) - genetic ethnic grouping (22006) -
+genetic sex (22001) - genotype measurement batch (22000) - missingness
+(22005) - genetic PCs (22009-0.1 - 22009-0.40) - genetic relatedness
+pairing (22011) - genetic kinship (22021) - outliers (22027)</p>
+<p>We filtered the samples based on the following criteria: - Remove all
+rows in which one or more of the values are missing, aside from the in
+the “outlier” and “relatedness_genetic” columns. This step removes any
+samples that are not marked as being “White British”. - Remove rows with
+mismatches between self-reported and genetic sex - Remove “missingness”
+and “heterozygosity” outliers as defined by UK Biobank. - Remove any
+individuals have at least one relative - Remove any individuals that
+have close relatives identified from the “relatendess” calculations that
+weren’t already identified using the kinship calculations.</p>
+<p>This ended up with n = ~45k or ~113k samples used in our simulation.
+We use SNP genotype data from chr 1 to chr 22 combined from UKB. We
+select SNPs with minor allele frequency &gt; 0.05 and SNPs with at least
+95% genotyping rate (5% missing). There are total = 6228664 SNPs passed
+these filters and go into our analysis.</p>
+<ul>
+<li>LD genotype reference</li>
+</ul>
+<p>We used the genotype of 2k samples from UKbiobank (randomly selected
+from the samples used in simulations) to serve as the LD reference.</p>
+<ul>
+<li>Expression models</li>
+</ul>
+<p>The one we used in this analysis is GTEx Adipose tissue v7 dataset.
+This dataset contains ~ 380 samples, 8021 genes with expression, we used
+their lasso results. SNPs included in eQTL anlaysis are restricted to
+cis-locus 500kb on either side of the gene boundary. eQTLs are defined
+as SNPs with abs(effectize) &gt; 1e-8 in lasso results.</p>
+</div>
+<div id="running-the-simulation-pipeline" class="section level2">
+<h2>Running the simulation pipeline</h2>
+<p>Simulation results in our paper comes from four pipelines, available
+in the <code>code/simulation/</code> folder.</p>
+<p>They are:</p>
+<ul>
+<li><p><code>Snakefile-simu_20210416</code>, this file simulated GWAS
+phenotypes using 45k samples, causal effect size were simulated from
+normal distribution.</p></li>
+<li><p><code>Snakefile-simu_20210418</code>, this file simulated GWAS
+phenotypes using 45k samples, causal effect size were simulated from
+normal distribution.</p></li>
+<li><p><code>Snakefile-simu_20230321</code>, this file simulated GWAS
+phenotypes using 113k samples, causal effect size were simulated from
+normal distribution.</p></li>
+</ul>
+</div>
 </div>
 
 

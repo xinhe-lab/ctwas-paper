@@ -16,6 +16,63 @@ This repository contains code and data resources to accompany our research paper
 
 The `ctwas` R package can be accessed [here](https://github.com/xinhe-lab/ctwas). The main analyses in the paper was obtained using ctwas v0.1.29. 
 
+# Perform a test simulation
+
+An example simulation pipepline is shown as `code/simulation/Snakefile-test`. It was written in the [snakemake](https://snakemake.readthedocs.io/en/stable/) workflow language. 
+
+[sheng can you add instructions here]?
+
+
+# Simulation performed in the paper. 
+
+## Input data for simulation
+
+  - Genotype data.
+  
+The individual genotype data we used is from UKB biobank, randomly selecting 80000 or 200000 samples. We then filtered samples. The columns selected for filtering samples are as follows:
+    - sex (31)
+    - UK Biobank assessment centre (54)
+    - age (21022)
+    - genetic ethnic grouping (22006)
+    - genetic sex (22001)
+    - genotype measurement batch (22000)
+    - missingness (22005)
+    - genetic PCs (22009-0.1 - 22009-0.40)
+    - genetic relatedness pairing (22011)
+    - genetic kinship (22021)
+    - outliers (22027)
+    
+We filtered the samples based on the following criteria:
+    - Remove all rows in which one or more of the values are missing, aside from the in the "outlier" and "relatedness_genetic" columns. This step removes any samples that are not marked as being "White British".
+    - Remove rows with mismatches between self-reported and genetic sex
+    - Remove "missingness" and "heterozygosity" outliers as defined by UK Biobank.
+    - Remove any individuals have at least one relative
+    - Remove any individuals that have close relatives identified from the "relatendess" calculations that weren't already identified using the kinship calculations.
+
+This ended up with n = ~45k or ~113k samples used in our simulation. We use SNP genotype data from chr 1 to chr 22 combined from UKB. We select SNPs with minor allele frequency > 0.05 and SNPs with at least 95% genotyping rate (5% missing). There are total = 6228664 SNPs passed these filters and go into our analysis.
+
+- LD genotype reference
+
+We used the genotype of 2k samples from UKbiobank (randomly selected from the samples used in simulations) to serve as the LD reference.
+
+- Expression models
+
+The one we used in this analysis is GTEx Adipose tissue v7 dataset. This dataset contains ~ 380 samples, 8021 genes with expression, we used their lasso results. SNPs included in eQTL anlaysis are restricted to cis-locus 500kb on either side of the gene boundary. eQTLs are defined as SNPs with abs(effectize) > 1e-8 in lasso results.
+
+## Running the simulation pipeline
+
+Simulation results in our paper comes from four pipelines, available in the `code/simulation/` folder. 
+
+They are: 
+
+- `Snakefile-simu_20210416`, this file simulated GWAS phenotypes using 45k samples, causal effect size were simulated from normal distribution.
+
+- `Snakefile-simu_20210418`, this file simulated GWAS phenotypes using 45k samples, causal effect size were simulated from normal distribution.
+
+- `Snakefile-simu_20230321`, this file simulated GWAS phenotypes using 113k samples, causal effect size were simulated from normal distribution.
+
+
+
 
 
 
