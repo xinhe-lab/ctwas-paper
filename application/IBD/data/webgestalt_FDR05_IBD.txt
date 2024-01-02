@@ -1,0 +1,82 @@
+Term	User ID	Gene Symbol	Gene Name	Entrez Gene ID
+cytokine production	CARD9	CARD9	caspase recruitment domain family member 9	64170
+cytokine production	CD200R1	CD200R1	CD200 receptor 1	131450
+cytokine production	CD244	CD244	CD244 molecule	51744
+cytokine production	ERRFI1	ERRFI1	ERBB receptor feedback inhibitor 1	54206
+cytokine production	HFE	HFE	homeostatic iron regulator	3077
+cytokine production	IL1R2	IL1R2	interleukin 1 receptor type 2	7850
+cytokine production	IRF8	IRF8	interferon regulatory factor 8	3394
+cytokine production	LTBP3	LTBP3	latent transforming growth factor beta binding protein 3	4054
+cytokine production	NDFIP1	NDFIP1	Nedd4 family interacting protein 1	80762
+cytokine production	PRKD2	PRKD2	protein kinase D2	25865
+cytokine production	SOCS1	SOCS1	suppressor of cytokine signaling 1	8651
+cytokine production	STAT3	STAT3	signal transducer and activator of transcription 3	6774
+defense response	ADAM15	ADAM15	ADAM metallopeptidase domain 15	8751
+defense response	ATG16L1	ATG16L1	autophagy related 16 like 1	55054
+defense response	CARD9	CARD9	caspase recruitment domain family member 9	64170
+defense response	CCL20	CCL20	C-C motif chemokine ligand 20	6364
+defense response	CCR5	CCR5	C-C motif chemokine receptor 5 (gene/pseudogene)	1234
+defense response	CD200R1	CD200R1	CD200 receptor 1	131450
+defense response	CD244	CD244	CD244 molecule	51744
+defense response	CRK	CRK	CRK proto-oncogene, adaptor protein	1398
+defense response	HFE	HFE	homeostatic iron regulator	3077
+defense response	IFNGR2	IFNGR2	interferon gamma receptor 2	3460
+defense response	IL1R2	IL1R2	interleukin 1 receptor type 2	7850
+defense response	IRF8	IRF8	interferon regulatory factor 8	3394
+defense response	ITGAL	ITGAL	integrin subunit alpha L	3683
+defense response	LSP1	LSP1	lymphocyte specific protein 1	4046
+defense response	MUC1	MUC1	mucin 1, cell surface associated	4582
+defense response	NDFIP1	NDFIP1	Nedd4 family interacting protein 1	80762
+defense response	SBNO2	SBNO2	strawberry notch homolog 2	22904
+defense response	SOCS1	SOCS1	suppressor of cytokine signaling 1	8651
+defense response	STAT3	STAT3	signal transducer and activator of transcription 3	6774
+regulation of immune system process	CARD9	CARD9	caspase recruitment domain family member 9	64170
+regulation of immune system process	CCL20	CCL20	C-C motif chemokine ligand 20	6364
+regulation of immune system process	CD200R1	CD200R1	CD200 receptor 1	131450
+regulation of immune system process	CD244	CD244	CD244 molecule	51744
+regulation of immune system process	CRK	CRK	CRK proto-oncogene, adaptor protein	1398
+regulation of immune system process	FCGR2A	FCGR2A	Fc fragment of IgG receptor IIa	2212
+regulation of immune system process	HFE	HFE	homeostatic iron regulator	3077
+regulation of immune system process	IFNGR2	IFNGR2	interferon gamma receptor 2	3460
+regulation of immune system process	ITGAL	ITGAL	integrin subunit alpha L	3683
+regulation of immune system process	LST1	LST1	leukocyte specific transcript 1	7940
+regulation of immune system process	MUC1	MUC1	mucin 1, cell surface associated	4582
+regulation of immune system process	NDFIP1	NDFIP1	Nedd4 family interacting protein 1	80762
+regulation of immune system process	PRKD2	PRKD2	protein kinase D2	25865
+regulation of immune system process	SOCS1	SOCS1	suppressor of cytokine signaling 1	8651
+regulation of immune system process	STAT3	STAT3	signal transducer and activator of transcription 3	6774
+regulation of immune system process	ZFP36L2	ZFP36L2	ZFP36 ring finger protein like 2	678
+immune response	ADAM15	ADAM15	ADAM metallopeptidase domain 15	8751
+immune response	CARD9	CARD9	caspase recruitment domain family member 9	64170
+immune response	CCL20	CCL20	C-C motif chemokine ligand 20	6364
+immune response	CCR5	CCR5	C-C motif chemokine receptor 5 (gene/pseudogene)	1234
+immune response	CD200R1	CD200R1	CD200 receptor 1	131450
+immune response	CD244	CD244	CD244 molecule	51744
+immune response	CRK	CRK	CRK proto-oncogene, adaptor protein	1398
+immune response	FCGR2A	FCGR2A	Fc fragment of IgG receptor IIa	2212
+immune response	HFE	HFE	homeostatic iron regulator	3077
+immune response	IFNGR2	IFNGR2	interferon gamma receptor 2	3460
+immune response	IL1R2	IL1R2	interleukin 1 receptor type 2	7850
+immune response	IRF8	IRF8	interferon regulatory factor 8	3394
+immune response	ITGAL	ITGAL	integrin subunit alpha L	3683
+immune response	LST1	LST1	leukocyte specific transcript 1	7940
+immune response	MUC1	MUC1	mucin 1, cell surface associated	4582
+immune response	NDFIP1	NDFIP1	Nedd4 family interacting protein 1	80762
+immune response	PRKD2	PRKD2	protein kinase D2	25865
+immune response	SBNO2	SBNO2	strawberry notch homolog 2	22904
+immune response	SOCS1	SOCS1	suppressor of cytokine signaling 1	8651
+immune response	STAT3	STAT3	signal transducer and activator of transcription 3	6774
+immune response	TNFSF15	TNFSF15	TNF superfamily member 15	9966
+positive regulation of protein modification process	BRD7	BRD7	bromodomain containing 7	29117
+positive regulation of protein modification process	CARD9	CARD9	caspase recruitment domain family member 9	64170
+positive regulation of protein modification process	CCL20	CCL20	C-C motif chemokine ligand 20	6364
+positive regulation of protein modification process	CRK	CRK	CRK proto-oncogene, adaptor protein	1398
+positive regulation of protein modification process	EFNA1	EFNA1	ephrin A1	1942
+positive regulation of protein modification process	HFE	HFE	homeostatic iron regulator	3077
+positive regulation of protein modification process	MUC1	MUC1	mucin 1, cell surface associated	4582
+positive regulation of protein modification process	NDFIP1	NDFIP1	Nedd4 family interacting protein 1	80762
+positive regulation of protein modification process	PRKD2	PRKD2	protein kinase D2	25865
+positive regulation of protein modification process	SH2D3A	SH2D3A	SH2 domain containing 3A	10045
+positive regulation of protein modification process	SOCS1	SOCS1	suppressor of cytokine signaling 1	8651
+positive regulation of protein modification process	STAT3	STAT3	signal transducer and activator of transcription 3	6774
+positive regulation of protein modification process	TNFSF15	TNFSF15	TNF superfamily member 15	9966
