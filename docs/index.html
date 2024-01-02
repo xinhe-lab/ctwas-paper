@@ -319,20 +319,24 @@ workflow language.</p>
 </ul>
 <p>The individual genotype data we used is from UKB biobank, randomly
 selecting 80000 or 200000 samples. We then filtered samples. The columns
-selected for filtering samples are as follows: - sex (31) - UK Biobank
-assessment centre (54) - age (21022) - genetic ethnic grouping (22006) -
-genetic sex (22001) - genotype measurement batch (22000) - missingness
-(22005) - genetic PCs (22009-0.1 - 22009-0.40) - genetic relatedness
-pairing (22011) - genetic kinship (22021) - outliers (22027)</p>
-<p>We filtered the samples based on the following criteria: - Remove all
-rows in which one or more of the values are missing, aside from the in
-the “outlier” and “relatedness_genetic” columns. This step removes any
-samples that are not marked as being “White British”. - Remove rows with
-mismatches between self-reported and genetic sex - Remove “missingness”
-and “heterozygosity” outliers as defined by UK Biobank. - Remove any
-individuals have at least one relative - Remove any individuals that
-have close relatives identified from the “relatendess” calculations that
-weren’t already identified using the kinship calculations.</p>
+selected for filtering samples are as follows:</p>
+<pre><code>- sex (31)
+- UK Biobank assessment centre (54)
+- age (21022)
+- genetic ethnic grouping (22006)
+- genetic sex (22001)
+- genotype measurement batch (22000)
+- missingness (22005)
+- genetic PCs (22009-0.1 - 22009-0.40)
+- genetic relatedness pairing (22011)
+- genetic kinship (22021)
+- outliers (22027)</code></pre>
+<p>We filtered the samples based on the following criteria:</p>
+<pre><code>- Remove all rows in which one or more of the values are missing, aside from the in the &quot;outlier&quot; and &quot;relatedness_genetic&quot; columns. This step removes any samples that are not marked as being &quot;White British&quot;.
+- Remove rows with mismatches between self-reported and genetic sex
+- Remove &quot;missingness&quot; and &quot;heterozygosity&quot; outliers as defined by UK Biobank.
+- Remove any individuals have at least one relative
+- Remove any individuals that have close relatives identified from the &quot;relatendess&quot; calculations that weren&#39;t already identified using the kinship calculations.</code></pre>
 <p>This ended up with n = ~45k or ~113k samples used in our simulation.
 We use SNP genotype data from chr 1 to chr 22 combined from UKB. We
 select SNPs with minor allele frequency &gt; 0.05 and SNPs with at least

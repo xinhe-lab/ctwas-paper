@@ -30,6 +30,7 @@ An example simulation pipepline is shown as `code/simulation/Snakefile-test`. It
   - Genotype data.
   
 The individual genotype data we used is from UKB biobank, randomly selecting 80000 or 200000 samples. We then filtered samples. The columns selected for filtering samples are as follows:
+
     - sex (31)
     - UK Biobank assessment centre (54)
     - age (21022)
@@ -43,6 +44,7 @@ The individual genotype data we used is from UKB biobank, randomly selecting 800
     - outliers (22027)
     
 We filtered the samples based on the following criteria:
+
     - Remove all rows in which one or more of the values are missing, aside from the in the "outlier" and "relatedness_genetic" columns. This step removes any samples that are not marked as being "White British".
     - Remove rows with mismatches between self-reported and genetic sex
     - Remove "missingness" and "heterozygosity" outliers as defined by UK Biobank.
