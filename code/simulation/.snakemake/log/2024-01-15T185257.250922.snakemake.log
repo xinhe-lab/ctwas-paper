@@ -1,0 +1,34 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 999
+Rules claiming more threads will be scaled down.
+Job stats:
+job              count
+-------------  -------
+all                  1
+ctwas_rss_LDR        1
+total                2
+
+Select jobs to execute...
+
+[Mon Jan 15 18:52:58 2024]
+rule ctwas_rss_LDR:
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_ld_R, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_fusion_weights/Tissue, /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/config1.R
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    jobid: 1
+    reason: Missing output files: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    wildcards: simutag=1-1, configtag=1
+    resources: tmpdir=/tmp
+
+[Mon Jan 15 18:53:11 2024]
+Error in rule ctwas_rss_LDR:
+    jobid: 1
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_ld_R, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_fusion_weights/Tissue, /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/config1.R
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    shell:
+        Rscript /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/run_ctwas_rss_LDR.R /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_ld_R /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_fusion_weights/Tissue /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/config1.R \test_simu1-1_LDR test_simu1-1_config1_LDR /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-01-15T185257.250922.snakemake.log

@@ -11,9 +11,9 @@ if (length(args) != 5) {
        * outputdir", call.=FALSE)
 }
 
-codedir <- "/project2/mstephens/causalTWAS/causal-TWAS/code/"
-source(paste0(codedir, "stats_func.R"))       
-source("~/causalTWAS/causal-TWAS/code/simulate_phenotype.R")
+codedir <- "./"
+source("./stats_func.R")
+source("./simulate_phenotype.R")
 
 pgenfs <- read.table(args[1], header = F, stringsAsFactors = F)[,1]
 exprfs <- read.table(args[2], header = F, stringsAsFactors = F)[,1]

@@ -1,0 +1,48 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 999
+Rules claiming more threads will be scaled down.
+Job stats:
+job                   count
+------------------  -------
+all                       1
+ctwas_rss_LDR             1
+gwas_snp                  1
+impute_expr               1
+simu_prep_param           1
+simulate_phenotype        1
+total                     6
+
+Select jobs to execute...
+
+[Mon Jan 15 18:40:38 2024]
+rule impute_expr:
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_pgenfs.txt, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_tissue.db
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test.expr.txt
+    jobid: 4
+    reason: Missing output files: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test.expr.txt; Set of input files has changed since last execution
+    resources: tmpdir=/tmp
+
+
+[Mon Jan 15 18:40:38 2024]
+rule simu_prep_param:
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/simu1-1_param.R
+    jobid: 5
+    reason: Missing output files: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/simu1-1_param.R
+    resources: tmpdir=/tmp
+
+[Mon Jan 15 18:40:40 2024]
+Finished job 5.
+1 of 6 steps (17%) done
+[Mon Jan 15 18:40:42 2024]
+Error in rule impute_expr:
+    jobid: 4
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_pgenfs.txt, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_tissue.db
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test.expr.txt
+    shell:
+        Rscript /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/run_impute_expr.R /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_pgenfs.txt /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_tissue.db test /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-01-15T184036.738886.snakemake.log

@@ -1,0 +1,36 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 999
+Rules claiming more threads will be scaled down.
+Job stats:
+job                   count
+------------------  -------
+all                       1
+ctwas_rss_LDR             1
+gwas_snp                  1
+simulate_phenotype        1
+total                     4
+
+Select jobs to execute...
+
+[Mon Jan 15 17:17:59 2024]
+rule simulate_phenotype:
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_pgenfs.txt, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test.expr.txt, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/simu1-1_param.R
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1-pheno.Rd
+    jobid: 3
+    reason: Missing output files: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1-pheno.Rd
+    wildcards: simutag=1-1
+    resources: tmpdir=/tmp
+
+[Mon Jan 15 17:18:09 2024]
+Error in rule simulate_phenotype:
+    jobid: 3
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_pgenfs.txt, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test.expr.txt, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/simu1-1_param.R
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1-pheno.Rd
+    shell:
+        Rscript /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/run_simulate_pheno.R /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_pgenfs.txt /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test.expr.txt /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/simu1-1_param.R test_simu1-1 /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-01-15T171758.109473.snakemake.log

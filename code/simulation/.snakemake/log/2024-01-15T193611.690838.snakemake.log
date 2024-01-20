@@ -1,0 +1,38 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 999
+Rules claiming more threads will be scaled down.
+Job stats:
+job              count
+-------------  -------
+all                  1
+ctwas_rss_LDR        1
+total                2
+
+Select jobs to execute...
+
+[Mon Jan 15 19:36:13 2024]
+rule ctwas_rss_LDR:
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_ld_R, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_fusion_weights/Tissue, /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/config1.R
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    jobid: 1
+    reason: Missing output files: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    wildcards: simutag=1-1, configtag=1
+    resources: tmpdir=/tmp
+
+[Mon Jan 15 19:37:26 2024]
+Finished job 1.
+1 of 2 steps (50%) done
+Select jobs to execute...
+
+[Mon Jan 15 19:37:26 2024]
+localrule all:
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    jobid: 0
+    reason: Input files updated by another job: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    resources: tmpdir=/tmp
+
+[Mon Jan 15 19:37:26 2024]
+Finished job 0.
+2 of 2 steps (100%) done
+Complete log: .snakemake/log/2024-01-15T193611.690838.snakemake.log

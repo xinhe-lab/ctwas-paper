@@ -1,0 +1,6 @@
+Building DAG of jobs...
+MissingInputException in rule impute_expr in file /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/Snakefile-test, line 36:
+Missing input files for rule impute_expr:
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test.expr.txt
+    affected files:
+        /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/example_pgenfs.txt

@@ -21,16 +21,6 @@ outname.e <- args[5]
 outname <- args[6]
 outputdir <- args[7]
 
-
-ld_regions_custom <- "/home/simingz/ctwas/inst/extdata/example_regions.bed"
-thin <- 1
-ncore <- 1
-ncore.rerun <- 1
-prob_single <- 0.8
-thin <- 1
-max_snp_region <- 1e4
-
-source(args[4]) # config
 # get gene z score
 if (file.exists(paste0(outputdir, "/", outname.e, "_z_gene.Rd"))){
   ld_exprfs <- paste0(outputdir, "/", outname.e, "_chr", 1:22, ".expr.gz")
@@ -45,7 +35,18 @@ if (file.exists(paste0(outputdir, "/", outname.e, "_z_gene.Rd"))){
     save(z_gene, file = paste0(outputdir, "/", outname.e, "_z_gene.Rd"))
 }
 
-# save.image("temp.Rd")
 # run ctwas_rss
-ctwas_rss(z_gene, z_snp, ld_exprfs, ld_pgenfs = NULL, ld_R_dir = ld_R_dir, ld_regions = "EUR", ld_regions_custom = ld_regions_custom, thin = thin, max_snp_region = max_snp_region, outputdir = outputdir, outname = outname, ncore = ncore, ncore.rerun = ncore.rerun, prob_single = prob_single, harmonize = T)
+ld_regions_custom <- "/home/simingz/ctwas/inst/extdata/example_regions.bed"
+thin <- 0.1
+ncore <- 1
+ncore.rerun <- 1
+prob_single <- 0.8
+max_snp_region <- 1e4
+
+ctwas_rss(z_gene, z_snp, ld_exprfs, ld_pgenfs = NULL, ld_R_dir = ld_R_dir, ld_regions = "EUR", 
+          ld_regions_custom = ld_regions_custom, thin = thin, max_snp_region = max_snp_region, 
+          outputdir = outputdir, outname = outname, ncore = ncore, ncore.rerun = ncore.rerun, 
+          prob_single = prob_single, niter2 = 10)
+
+
 

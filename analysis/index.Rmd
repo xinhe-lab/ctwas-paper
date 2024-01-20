@@ -20,8 +20,37 @@ The `ctwas` R package can be accessed [here](https://github.com/xinhe-lab/ctwas)
 
 An example simulation pipepline is shown as `code/simulation/Snakefile-test`. It was written in the [snakemake](https://snakemake.readthedocs.io/en/stable/) workflow language. 
 
-[sheng can you add instructions here]?
+Variables:
 
+- codedir: Directory containing the code for simulations
+- pgenfs: Path to the genotype data
+- ld_R_dir: Directory containing the reference LD
+- weight: Path to the weight file
+- outputdir: Directory where output files will be saved
+- runtag: A tag to identify the simulation
+- configtags: Tags for different configuration settings
+- simutags: Tags for different simulation settings
+
+Rules: 
+
+- rule all: This is the default rule that specifies all the outputs that the workflow is expected to generate
+- rule simu_prep_param: Prepares parameter files for simulations
+- rule impute_expr: Runs an R script to impute expression data
+- rule simulate_phenotype: Simulates phenotypes based on the imputed expression data, genotype data, and simulation parameters
+- rule gwas_snp: Performs GWAS
+- rule ctwas_rss_LDR: Perform causal-TWAS analysis with reference LD data
+
+Execution Flow： 
+
+- The workflow begins by preparing simulation parameters
+- It then proceeds to impute expression data, followed by phenotype simulation
+- Next, it performs GWAS analyses
+- Finally, it runs causal-TWAS analyses
+
+To run the simulation:
+
+- Go to the the `code/simulation/` folder
+- Run `snakemake -s Snakefile-test -j 999` 
 
 # Simulation performed in the paper. 
 

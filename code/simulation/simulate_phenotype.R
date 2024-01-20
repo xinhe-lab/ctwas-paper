@@ -27,14 +27,14 @@ simulate_phenotype<- function(pgenfs,
                               pi_k = NULL,
                               sa2_kr = NULL
 ) {
-  pvarfs <- sapply(pgenfs, prep_pvar, outputdir = outputdir)
-  exprvarfs <- sapply(exprfs, prep_exprvar)
+  pvarfs <- sapply(pgenfs, ctwas:::prep_pvar, outputdir = outputdir)
+  exprvarfs <- sapply(exprfs, ctwas:::prep_exprvar)
 
-  pgen1 <- prep_pgen(pgenf = pgenfs[1], pvarfs[1])
+  pgen1 <- ctwas:::prep_pgen(pgenf = pgenfs[1], pvarfs[1])
   N <- pgenlibr::GetRawSampleCt(pgen1)
 
-  M.b <- sapply(pvarfs, function(x) nrow(read_pvar(x)))
-  J.b <- sapply(exprvarfs, function(x) nrow(read_exprvar(x)))
+  M.b <- sapply(pvarfs, function(x) nrow(ctwas:::read_pvar(x)))
+  J.b <- sapply(exprvarfs, function(x) nrow(ctwas:::read_exprvar(x)))
 
   M <- sum(M.b)
   J <- sum(J.b)
@@ -57,16 +57,16 @@ simulate_phenotype<- function(pgenfs,
     idx.cgene <- which(rbinom(J.b[b], 1, pi_beta) == 1)
     idx.cSNP <- which(rbinom(M.b[b], 1, pi_theta) == 1)
 
-    X.g <- read_expr(exprfs[b], variantidx = idx.cgene)
+    X.g <- ctwas:::read_expr(exprfs[b], variantidx = idx.cgene)
     if (is.null(X.g)){
       X.g <- matrix(, nrow= N, ncol =0)
     }
 
     X.g <- scaleRcpp(X.g) # always scale expr
 
-    pgen <- prep_pgen(pgenf = pgenfs[b], pvarfs[b])
+    pgen <- ctwas:::prep_pgen(pgenf = pgenfs[b], pvarfs[b])
 
-    X.s <- read_pgen(pgen, variantidx = idx.cSNP)
+    X.s <- ctwas:::read_pgen(pgen, variantidx = idx.cSNP)
     X.s <- scaleRcpp(X.s) # always scale genotype
 
     prior_dist_causal <- match.arg(prior_dist_causal)
@@ -110,9 +110,9 @@ simulate_phenotype<- function(pgenfs,
     var.gene <- var(X.g %*% e.beta)
     var.snp <- var(X.s %*% s.theta)
 
-    id.cgene <- read_exprvar(exprvarfs[b])[idx.cgene,][["id"]]
+    id.cgene <- ctwas:::read_exprvar(exprvarfs[b])[idx.cgene,][["id"]]
 
-    id.cSNP <-  read_pvar(pvarfs[b])[idx.cSNP, ][["id"]]
+    id.cSNP <-  ctwas:::read_pvar(pvarfs[b])[idx.cSNP, ][["id"]]
 
     phenores[["batch"]][[b]] <- tibble::lst(Y.g, s.theta, e.beta,
                                              sigma_theta, sigma_beta,

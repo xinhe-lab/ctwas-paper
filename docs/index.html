@@ -13,7 +13,7 @@
 
 <title>ctwas paper related analyses</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
@@ -32,10 +32,10 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-6.2.1/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.2.1/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
-<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
 <style type="text/css">
 div.section {
@@ -288,27 +288,47 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This repository contains code and data resources to accompany our
-research paper:</p>
+<p>This repository contains code and data resources to accompany our research paper:</p>
 <blockquote>
-<p>Siming, Z., Wesley, C., Sheng, Q., Kaixuan, L., Stephens, M. &amp;
-Xin, H. (2022). Adjusting for genetic confounders in transcriptome-wide
-association studies leads to reliable detection of causal genes
-application to genetic fine mapping. *bioRxiv <a
-href="https://doi.org/10.1101/2022.09.27.509700"
-class="uri">https://doi.org/10.1101/2022.09.27.509700</a></p>
+<p>Siming, Z., Wesley, C., Sheng, Q., Kaixuan, L., Stephens, M. &amp; Xin, H. (2022). Adjusting for genetic confounders in transcriptome-wide association studies leads to reliable detection of causal genes application to genetic fine mapping. *bioRxiv <a href="https://doi.org/10.1101/2022.09.27.509700" class="uri">https://doi.org/10.1101/2022.09.27.509700</a></p>
 </blockquote>
-<p>The <code>ctwas</code> R package can be accessed <a
-href="https://github.com/xinhe-lab/ctwas">here</a>. The main analyses in
-the paper was obtained using ctwas v0.1.29.</p>
+<p>The <code>ctwas</code> R package can be accessed <a href="https://github.com/xinhe-lab/ctwas">here</a>. The main analyses in the paper was obtained using ctwas v0.1.29.</p>
 </div>
 <div id="perform-a-test-simulation" class="section level1">
 <h1>Perform a test simulation</h1>
-<p>An example simulation pipepline is shown as
-<code>code/simulation/Snakefile-test</code>. It was written in the <a
-href="https://snakemake.readthedocs.io/en/stable/">snakemake</a>
-workflow language.</p>
-<p>[sheng can you add instructions here]?</p>
+<p>An example simulation pipepline is shown as <code>code/simulation/Snakefile-test</code>. It was written in the <a href="https://snakemake.readthedocs.io/en/stable/">snakemake</a> workflow language.</p>
+<p>Variables:</p>
+<ul>
+<li>codedir: Directory containing the code for simulations</li>
+<li>pgenfs: Path to the genotype data</li>
+<li>ld_R_dir: Directory containing the reference LD</li>
+<li>weight: Path to the weight file</li>
+<li>outputdir: Directory where output files will be saved</li>
+<li>runtag: A tag to identify the simulation</li>
+<li>configtags: Tags for different configuration settings</li>
+<li>simutags: Tags for different simulation settings</li>
+</ul>
+<p>Rules:</p>
+<ul>
+<li>rule all: This is the default rule that specifies all the outputs that the workflow is expected to generate</li>
+<li>rule simu_prep_param: Prepares parameter files for simulations</li>
+<li>rule impute_expr: Runs an R script to impute expression data</li>
+<li>rule simulate_phenotype: Simulates phenotypes based on the imputed expression data, genotype data, and simulation parameters</li>
+<li>rule gwas_snp: Performs GWAS</li>
+<li>rule ctwas_rss_LDR: Perform causal-TWAS analysis with reference LD data</li>
+</ul>
+<p>Execution Flow：</p>
+<ul>
+<li>The workflow begins by preparing simulation parameters</li>
+<li>It then proceeds to impute expression data, followed by phenotype simulation</li>
+<li>Next, it performs GWAS analyses</li>
+<li>Finally, it runs causal-TWAS analyses</li>
+</ul>
+<p>To run the simulation:</p>
+<ul>
+<li>Go to the the <code>code/simulation/</code> folder</li>
+<li>Run <code>snakemake -s Snakefile-test -j 999</code></li>
+</ul>
 </div>
 <div id="simulation-performed-in-the-paper." class="section level1">
 <h1>Simulation performed in the paper.</h1>
@@ -317,9 +337,7 @@ workflow language.</p>
 <ul>
 <li>Genotype data.</li>
 </ul>
-<p>The individual genotype data we used is from UKB biobank, randomly
-selecting 80000 or 200000 samples. We then filtered samples. The columns
-selected for filtering samples are as follows:</p>
+<p>The individual genotype data we used is from UKB biobank, randomly selecting 80000 or 200000 samples. We then filtered samples. The columns selected for filtering samples are as follows:</p>
 <pre><code>- sex (31)
 - UK Biobank assessment centre (54)
 - age (21022)
@@ -337,40 +355,24 @@ selected for filtering samples are as follows:</p>
 - Remove &quot;missingness&quot; and &quot;heterozygosity&quot; outliers as defined by UK Biobank.
 - Remove any individuals have at least one relative
 - Remove any individuals that have close relatives identified from the &quot;relatendess&quot; calculations that weren&#39;t already identified using the kinship calculations.</code></pre>
-<p>This ended up with n = ~45k or ~113k samples used in our simulation.
-We use SNP genotype data from chr 1 to chr 22 combined from UKB. We
-select SNPs with minor allele frequency &gt; 0.05 and SNPs with at least
-95% genotyping rate (5% missing). There are total = 6228664 SNPs passed
-these filters and go into our analysis.</p>
+<p>This ended up with n = ~45k or ~113k samples used in our simulation. We use SNP genotype data from chr 1 to chr 22 combined from UKB. We select SNPs with minor allele frequency &gt; 0.05 and SNPs with at least 95% genotyping rate (5% missing). There are total = 6228664 SNPs passed these filters and go into our analysis.</p>
 <ul>
 <li>LD genotype reference</li>
 </ul>
-<p>We used the genotype of 2k samples from UKbiobank (randomly selected
-from the samples used in simulations) to serve as the LD reference.</p>
+<p>We used the genotype of 2k samples from UKbiobank (randomly selected from the samples used in simulations) to serve as the LD reference.</p>
 <ul>
 <li>Expression models</li>
 </ul>
-<p>The one we used in this analysis is GTEx Adipose tissue v7 dataset.
-This dataset contains ~ 380 samples, 8021 genes with expression, we used
-their lasso results. SNPs included in eQTL anlaysis are restricted to
-cis-locus 500kb on either side of the gene boundary. eQTLs are defined
-as SNPs with abs(effectize) &gt; 1e-8 in lasso results.</p>
+<p>The one we used in this analysis is GTEx Adipose tissue v7 dataset. This dataset contains ~ 380 samples, 8021 genes with expression, we used their lasso results. SNPs included in eQTL anlaysis are restricted to cis-locus 500kb on either side of the gene boundary. eQTLs are defined as SNPs with abs(effectize) &gt; 1e-8 in lasso results.</p>
 </div>
 <div id="running-the-simulation-pipeline" class="section level2">
 <h2>Running the simulation pipeline</h2>
-<p>Simulation results in our paper comes from four pipelines, available
-in the <code>code/simulation/</code> folder.</p>
+<p>Simulation results in our paper comes from four pipelines, available in the <code>code/simulation/</code> folder.</p>
 <p>They are:</p>
 <ul>
-<li><p><code>Snakefile-simu_20210416</code>, this file simulated GWAS
-phenotypes using 45k samples, causal effect size were simulated from
-normal distribution.</p></li>
-<li><p><code>Snakefile-simu_20210418</code>, this file simulated GWAS
-phenotypes using 45k samples, causal effect size were simulated from
-normal distribution.</p></li>
-<li><p><code>Snakefile-simu_20230321</code>, this file simulated GWAS
-phenotypes using 113k samples, causal effect size were simulated from
-normal distribution.</p></li>
+<li><p><code>Snakefile-simu_20210416</code>, this file simulated GWAS phenotypes using 45k samples, causal effect size were simulated from normal distribution.</p></li>
+<li><p><code>Snakefile-simu_20210418</code>, this file simulated GWAS phenotypes using 45k samples, causal effect size were simulated from normal distribution.</p></li>
+<li><p><code>Snakefile-simu_20230321</code>, this file simulated GWAS phenotypes using 113k samples, causal effect size were simulated from normal distribution.</p></li>
 </ul>
 </div>
 </div>
@@ -378,7 +380,7 @@ normal distribution.</p></li>
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
-http://docs.mathjax.org/en/latest/configuration.html.  This will make
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
 the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->

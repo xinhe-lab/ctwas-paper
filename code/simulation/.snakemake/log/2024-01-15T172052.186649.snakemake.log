@@ -1,0 +1,49 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 999
+Rules claiming more threads will be scaled down.
+Job stats:
+job              count
+-------------  -------
+all                  1
+ctwas_rss_LDR        1
+gwas_snp             1
+total                3
+
+Select jobs to execute...
+
+[Mon Jan 15 17:20:53 2024]
+rule gwas_snp:
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/example_pgenfs.txt, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1-pheno.Rd
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz
+    jobid: 2
+    reason: Missing output files: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz
+    wildcards: simutag=1-1
+    resources: tmpdir=/tmp
+
+[Mon Jan 15 17:22:08 2024]
+Finished job 2.
+1 of 3 steps (33%) done
+Select jobs to execute...
+
+[Mon Jan 15 17:22:08 2024]
+rule ctwas_rss_LDR:
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/ld_matrices, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/weights_nolnc/mashr_Liver_nolnc_subset.db, /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/config1.R
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    jobid: 1
+    reason: Missing output files: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt; Input files updated by another job: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz
+    wildcards: simutag=1-1, configtag=1
+    resources: tmpdir=/tmp
+
+[Mon Jan 15 17:22:19 2024]
+Error in rule ctwas_rss_LDR:
+    jobid: 1
+    input: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/ld_matrices, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz, /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/weights_nolnc/mashr_Liver_nolnc_subset.db, /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/config1.R
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    shell:
+        Rscript /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/run_ctwas_rss_LDR.R /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1.snpgwas.txt.gz /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/ld_matrices /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/weights_nolnc/mashr_Liver_nolnc_subset.db /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/config1.R \test_simu1-1_LDR test_simu1-1_config1_LDR /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-01-15T172052.186649.snakemake.log

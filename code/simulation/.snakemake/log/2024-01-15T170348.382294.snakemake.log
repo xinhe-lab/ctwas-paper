@@ -1,0 +1,7 @@
+Building DAG of jobs...
+MissingInputException in rule ctwas_rss_LDR in file /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulation/Snakefile-test, line 76:
+Missing input files for rule ctwas_rss_LDR:
+    output: /project2/xinhe/shengqian/cTWAS/ctwas-paper/data/test/test_simu1-1_config1_LDR.susieIrss.txt
+    wildcards: simutag=1-1, configtag=1
+    affected files:
+        /project2/xinhe/shengqian/cTWAS/ctwas-paper/code/simulationconfig1.R

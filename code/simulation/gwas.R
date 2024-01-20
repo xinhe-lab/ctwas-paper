@@ -21,8 +21,7 @@ GWAA <- function(genof, mode = c("snp", "expr"), pheno, snpname, anno = NULL, ou
   mode <- match.arg(mode)
 
   columns<- c(colnames(anno), "id", c("Estimate", "Std.Error", "t-value", "PVALUE"))
-  write.table(t(columns), outname, row.names=FALSE, col.names=FALSE, quote=FALSE, sep = "\t")
-
+  write.table(t(columns), paste0(outputdir, "/",outname), row.names=FALSE, col.names=FALSE, quote=FALSE, sep = "\t")
   nSNPs <- length(snpname)
   if (nSNPs > 0){
 
@@ -30,7 +29,6 @@ GWAA <- function(genof, mode = c("snp", "expr"), pheno, snpname, anno = NULL, ou
 
     snp.start <- seq(1, nSNPs, genosplit) # index of first SNP in group
     snp.stop <- pmin(snp.start+genosplit-1, nSNPs) # index of last SNP in group
-
     res <- foreach(part = 1:length(snp.start),.combine='rbind', .packages = "ctwas")  %dopar% {
 
       cat(sprintf("GWAS %s%% finished\n", part/length(snp.start)))
@@ -38,17 +36,17 @@ GWAA <- function(genof, mode = c("snp", "expr"), pheno, snpname, anno = NULL, ou
       get_geno <- function(genof, mode = mode,
                            variantidx = NULL, outputdir = NULL){
         if (mode == "expr"){
-          geno <- read_expr(genof, variantidx = variantidx)
+          geno <- ctwas:::read_expr(genof, variantidx = variantidx)
         } else if (mode == "snp"){
-          pvarf <- prep_pvar(genof, outputdir = outputdir)
-          pgen <- prep_pgen(genof, pvarf)
-          geno <- read_pgen(pgen, variantidx = variantidx)
+          pvarf <- ctwas:::prep_pvar(genof, outputdir = outputdir)
+          pgen <- ctwas:::prep_pgen(genof, pvarf)
+          geno <- ctwas:::read_pgen(pgen, variantidx = variantidx)
         } else {
           stop("undefined mode")
         }
         geno
       }
-
+      
       geno.i <- get_geno(genof, mode = mode,
                          variantidx = snp.start[part]:snp.stop[part],
                          outputdir = outputdir)
@@ -68,6 +66,7 @@ GWAA <- function(genof, mode = c("snp", "expr"), pheno, snpname, anno = NULL, ou
                          data=data.frame("pheno" = pheno, "snp" = snp)))
         res.i[snp.idx, ] <- a$coefficients['snp',]
       }
+      
       colnames(res.i) <- c("Estimate", "Std.Error", "t-value", "PVALUE")
 
       res.out <- cbind(anno.i, snpname.i, res.i)
@@ -87,7 +86,6 @@ GWAA <- function(genof, mode = c("snp", "expr"), pheno, snpname, anno = NULL, ou
   # compress
   if (isTRUE(compress)){
     system(paste0("gzip -f ", outname))
-    # system(paste0("tabix -p bed ", outname, ".gz"))
   }
 
   return(print("Done."))

@@ -1,20 +1,16 @@
 
-codedir = "~/causalTWAS/causal-TWAS/code/"
-pgenfs = "/home/simingz/causalTWAS/simulations/test_package_temp/example_pgenfs.txt"
-ld_pgenfs = pgenfs
-ld_R_dir = "/home/simingz/ctwas/inst/extdata/example_ld_R"
-weight = "/home/simingz/ctwas/inst/extdata/example_fusion_weights/Tissue"
-
-outputdir = "/home/simingz/causalTWAS/simulations/test_package_temp/" # add / at end
+codedir = "./"
+pgenfs = "../../data/example_pgenfs.txt"
+ld_R_dir = "../../data/example_ld_R"
+weight = "../../data/example_fusion_weights/Tissue"
+outputdir = "../../data/test/" # add / at end
 runtag = "test"
 configtags = [str(i) for i in range(1,2)]
-simutags = [ str(i) + "-" + str(j) for i in range(1,3) for j in range(1,6)]
+simutags = [ str(i) + "-" + str(j) for i in range(1,2) for j in range(1,2)]
 
 
 rule all:
     input: 
-        [outputdir + runtag +'_simu'+ simutag + '_config' + configtag + ".susieIrss.txt" for simutag in simutags for configtag in configtags] +
-        [outputdir + runtag + '_simu'+ simutag +'.exprgwas.txt.gz' for simutag in simutags] +
         [outputdir + runtag +'_simu'+ simutag + '_config' + configtag + '_LDR' + ".susieIrss.txt" for simutag in simutags for configtag in configtags]
         
 rule simu_prep_param:
@@ -33,11 +29,9 @@ rule simu_prep_param:
                         'pi_beta <- ' + str(params.pi1_gene[int(t1)-1]),
                         'pve.snp <- ' + str(params.pve_snp[int(t1)-1]),
                         'pi_theta <- ' + str(params.pi1_snp[int(t1)-1]),
-                        'SED <- ' + str(950 + int(t2)),
-                        'prior_dist_causal <- "mixnormal"']
+                        'SED <- ' + str(950 + int(t2))]
                 outf.writelines(s + '\n' for s in lines)
                 
-
 rule impute_expr:
     input:
         pgenfs = pgenfs,
@@ -62,22 +56,6 @@ rule simulate_phenotype:
         outputdir = outputdir
     shell:
         'Rscript ' + codedir + 'run_simulate_pheno.R {input.pgenfs} {input.exprfs} {input.paramf} {params.outname} {params.outputdir}'
-
-rule gwas_expr:
-    input:
-        exprfs = rules.impute_expr.output,
-        phenof = rules.simulate_phenotype.output
-    output:
-        outputdir + runtag + '_simu{simutag}.exprgwas.txt.gz'
-    params:
-        outname = runtag + '_simu{simutag}',
-        outputdir = outputdir,
-        ncore = 1,
-        nsplits = 2
-    shell:
-        'Rscript ' + codedir + 'run_gwas_expr.R {input.exprfs} {input.phenof} {params.outname} {params.outputdir}\
-         {params.ncore} {params.nsplits}'
-    
     
 rule gwas_snp:
     input:
@@ -94,27 +72,12 @@ rule gwas_snp:
         'Rscript ' + codedir + 'run_gwas_snp.R {input.pgenfs} {input.phenof} {params.outname} {params.outputdir} \
         {params.ncore} {params.nsplits}'
 
-rule ctwas_rss:
-    input:
-        ld_pgenfs = ld_pgenfs,
-        snpz = rules.gwas_snp.output,
-        weight = weight,
-        configfile = outputdir + 'config{configtag}.R'
-    output:
-        outputdir + runtag + '_simu{simutag}_config{configtag}.susieIrss.txt'
-    params:
-        outname_expr = runtag + '_simu{simutag}',
-        outname = runtag + '_simu{simutag}_config{configtag}',
-        outputdir = outputdir
-    shell:
-        'Rscript ' + codedir + 'run_ctwas_rss.R {input.snpz} {input.ld_pgenfs} {input.weight} {input.configfile} \{params.outname_expr} {params.outname} {params.outputdir}'
-        
 rule ctwas_rss_LDR:
     input:
         ld_R_dir = ld_R_dir,
         snpz = rules.gwas_snp.output,
         weight = weight,
-        configfile = outputdir + 'config{configtag}.R'
+        configfile = codedir + 'config{configtag}.R'
     output:
         outputdir + runtag + '_simu{simutag}_config{configtag}_LDR.susieIrss.txt'
     params:
